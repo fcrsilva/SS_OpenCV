@@ -23,6 +23,7 @@ namespace SS_OpenCV
         {
             InitializeComponent();
             title_bak = Text;
+            new EvalForm().ShowDialog();
         }
 
         /// <summary>
@@ -170,7 +171,7 @@ namespace SS_OpenCV
             //copy Undo Image
             imgUndo = img.Copy();
 
-            ImageClass.translation(img,imgUndo);
+            ImageClass.Translation(img,imgUndo,100,100);
 
             ImageViewer.Image = img.Bitmap;
             ImageViewer.Refresh(); // refresh image on the screen
@@ -187,7 +188,7 @@ namespace SS_OpenCV
             //copy Undo Image
             imgUndo = img.Copy();
 
-            ImageClass.meanFilter(img, imgUndo);
+            ImageClass.Mean(img, imgUndo);
 
             ImageViewer.Image = img.Bitmap;
             ImageViewer.Refresh(); // refresh image on the screen
@@ -225,7 +226,7 @@ namespace SS_OpenCV
 
             try
             {
-                ImageClass.filNUnif(img, imgUndo, nonuni.weight, nonuni.weight_factor);
+                //ImageClass.filNUnif(img, imgUndo, nonuni.weight, nonuni.weight_factor);
             }
             catch { }
 
@@ -260,7 +261,7 @@ namespace SS_OpenCV
 
             try
             {
-                ImageClass.mediana(img, imgUndo);
+                ImageClass.Median(img, imgUndo);
             }
             catch { }
 
@@ -282,7 +283,7 @@ namespace SS_OpenCV
             InputBox form = new InputBox("Threshold?");
             form.ShowDialog();
             int threshold = Convert.ToInt32(form.ValueTextBox.Text);
-            ImageClass.Manual_binarization(img, imgUndo, threshold);
+            ImageClass.ConvertToBW(img, threshold);
             ImageViewer.Refresh(); // atualiza imagem no ecrã
             Cursor = Cursors.Default;
         }
@@ -296,7 +297,7 @@ namespace SS_OpenCV
             //copy Undo Image
             imgUndo = img.Copy();
 
-            ImageClass.sobel_filter(img, imgUndo);
+            ImageClass.Sobel(img, imgUndo);
 
             ImageViewer.Image = img.Bitmap;
             ImageViewer.Refresh(); // refresh image on the screen
@@ -312,7 +313,7 @@ namespace SS_OpenCV
             Cursor = Cursors.WaitCursor; // cursor relogio
             //copy Undo Image
             imgUndo = img.Copy();
-            ImageClass.Histogram(img, imgUndo);
+            //ImageClass.Histogram_Gray(img);
             ImageViewer.Refresh(); // atualiza imagem no ecrã
             Cursor = Cursors.Default;
         }
@@ -325,10 +326,15 @@ namespace SS_OpenCV
             Cursor = Cursors.WaitCursor; // cursor relogio
             //copy Undo Image
             imgUndo = img.Copy();
-            ImageClass.Otsu(img, imgUndo);
+            ImageClass.ConvertToBW_Otsu(img);
             ImageViewer.Refresh(); // atualiza imagem no ecrã
             Cursor = Cursors.Default;
 
+        }
+
+        private void evalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new SS_OpenCV.EvalForm().ShowDialog();
         }
     }
 }

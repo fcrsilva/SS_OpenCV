@@ -4,6 +4,7 @@ using System.Text;
 using Emgu.CV.Structure;
 using Emgu.CV;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace SS_OpenCV
 {
@@ -15,7 +16,7 @@ namespace SS_OpenCV
         /// Slower method
         /// </summary>
         /// <param name="img">Image</param>
-        internal static void Negative(Image<Bgr, byte> img)
+        public static void Negative1(Image<Bgr, byte> img)
         {
             Bgr aux;
             for (int y = 0; y < img.Height; y++)
@@ -29,13 +30,7 @@ namespace SS_OpenCV
             }
         }
 
-
-        /// <summary>
-        /// Convert to gray
-        /// Direct access to memory
-        /// </summary>
-        /// <param name="img">image</param>
-        internal static void ConvertToGray(Image<Bgr, byte> img)
+        public static void ConvertToGray(Image<Bgr, byte> img)
         {
             unsafe
             {
@@ -82,14 +77,169 @@ namespace SS_OpenCV
             }
         }
 
-        internal static void translation(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
+        public static void Negative(Image<Bgr, byte> img)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+
+                MIplImage m = img.MIplImage;
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+                byte blue, green, red, gray;
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+                int x, y;
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                        {
+                            //obtém as 3 componentes
+                            blue = dataPtr[0];
+                            green = dataPtr[1];
+                            red = dataPtr[2];
+
+                            // convert to gray
+                            gray = (byte)(((int)blue + green + red) / 3);
+
+                            // store in the image
+                            dataPtr[0] = (byte)(255 - blue);
+                            dataPtr[1] = (byte)(255 - green);
+                            dataPtr[2] = (byte)(255 - red);
+
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+                    }
+                }
+            }
+        }
+
+        public static void RedChannel(Image<Bgr, byte> img)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+
+                MIplImage m = img.MIplImage;
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+                byte red;
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+                int x, y;
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                        {
+                            //obtém a componente red
+                            red = dataPtr[2];
+
+                            // store in the image
+                            dataPtr[0] = red;
+                            dataPtr[1] = red;
+                            dataPtr[2] = red;
+
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+                    }
+                }
+            }
+        }
+
+        public static void BrightContrast(Image<Bgr, byte> img, int bright, double contrast)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+
+                MIplImage m = img.MIplImage;
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+                byte blue, green, red;
+
+                double newblue, newgreen, newred;
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+                int x, y;
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                        {
+                            //obtém as 3 componentes
+                            blue = dataPtr[0];
+                            green = dataPtr[1];
+                            red = dataPtr[2];
+
+                            newblue = (blue * contrast + bright);
+
+                            if (newblue > 255)
+                                newblue = 255;
+                            if (newblue < 0)
+                                newblue = 0;
+
+                            newgreen = (green * contrast + bright);
+
+                            if (newgreen > 255)
+                                newgreen = 255;
+                            if (newgreen < 0)
+                                newgreen = 0;
+
+                            newred = (red * contrast + bright);
+
+                            if (newred > 255)
+                                newred = 255;
+                            if (newred < 0)
+                                newred = 0;
+
+                            // store in the image
+                            dataPtr[0] = (byte)Math.Round(newblue);
+                            dataPtr[1] = (byte)Math.Round(newgreen);
+                            dataPtr[2] = (byte)Math.Round(newred);
+
+                    // advance the pointer to the next pixel
+                    dataPtr += nChan;
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+                    }
+                }
+            }
+        }
+
+        public static void Translation(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, int dx, int dy)
         {
             unsafe
             {
                 // direct access to the image memory(sequencial)
                 // direcion top left -> bottom right
                 MIplImage m = img.MIplImage;
-                MIplImage mU = imgUndo.MIplImage;
+                MIplImage mU = imgCopy.MIplImage;
 
                 byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
                 byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
@@ -99,7 +249,7 @@ namespace SS_OpenCV
                 int nChan = m.nChannels; // number of channels - 3
                 int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
                 int x, y, x_orig, y_orig;
-                int movx = -900, movy = -900;
+                int movx = dx, movy = dy;
 
 
                 if (nChan == 3) // image in RGB
@@ -110,26 +260,22 @@ namespace SS_OpenCV
                         for (x = 0; x < width; x++)
                         {
 
-                            if (x < movx || width + movx < x || y < movy || height + movy < y)
-                            {
-                                dataPtr[0] = (byte)0;
-                                dataPtr[1] = (byte)0;
-                                dataPtr[2] = (byte)0;
-                            }
-
-                            else
-                            {
                                 x_orig = x - movx;
                                 y_orig = y - movy;
 
                                 if (x_orig < width && x_orig >= 0 && y_orig < height && y_orig >= 0)
                                 {
-                                    //obtém as 3 componentes
-                                    dataPtr[0] = (byte)(dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[0];
-                                    dataPtr[1] = (byte)(dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[1];
-                                    dataPtr[2] = (byte)(dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[2];
+                                    dataPtr[0] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[0];
+                                    dataPtr[1] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[1];
+                                    dataPtr[2] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[2];
+                }
+                                else
+                                {
+                                    dataPtr[0] = (byte)0;
+                                dataPtr[1] = (byte)0;
+                                dataPtr[2] = (byte)0;
                                 }
-                            }
+                            
 
                             // advance the pointer to the next pixel
                             dataPtr += nChan;
@@ -144,7 +290,177 @@ namespace SS_OpenCV
             }
         }
 
-        internal static void meanFilter(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
+        public static void Rotation(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float angle)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+                MIplImage m = img.MIplImage;
+                MIplImage mU = imgCopy.MIplImage;
+
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+                byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+                int x, y, x_orig, y_orig;
+                //angle = -angle*(float)Math.PI/180;
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+
+                        for (x = 0; x < width; x++)
+                        {
+                                x_orig = (int) Math.Round((x - (width/2))*Math.Cos(angle)-((height/2)-y)*Math.Sin(angle)+width/2);
+                                y_orig =(int) Math.Round((height/2)-(x-(width/2))*Math.Sin(angle)-((height/2)-y)*Math.Cos(angle));
+
+                            if (x_orig < width && x_orig >= 0 && y_orig < height && y_orig >= 0)
+                                {
+                                dataPtr[0] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[0];
+                                dataPtr[1] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[1];
+                                dataPtr[2] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[2];
+                            }
+                            else
+                            {
+                                dataPtr[0] = (byte)0;
+                                dataPtr[1] = (byte)0;
+                                dataPtr[2] = (byte)0;
+                            }
+
+
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+
+                    }
+                }
+            }
+        }
+
+        public static void Scale(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float scaleFactor)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+                MIplImage m = img.MIplImage;
+                MIplImage mU = imgCopy.MIplImage;
+
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+                byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+                int x, y, x_orig, y_orig;
+
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+
+                        for (x = 0; x < width; x++)
+                        {
+
+                            x_orig = (int) (x / scaleFactor);
+                            y_orig = (int)(y / scaleFactor);
+
+                            if (x_orig < width && x_orig >= 0 && y_orig < height && y_orig >= 0)
+                            {
+                                dataPtr[0] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[0];
+                                dataPtr[1] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[1];
+                                dataPtr[2] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[2];
+                            }
+                            else
+                            {
+                                dataPtr[0] = (byte)0;
+                                dataPtr[1] = (byte)0;
+                                dataPtr[2] = (byte)0;
+                            }
+
+
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+
+                    }
+                }
+            }
+        }
+
+        public static void Scale_point_xy(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float scaleFactor, int centerX, int centerY)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+                MIplImage m = img.MIplImage;
+                MIplImage mU = imgCopy.MIplImage;
+
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+                byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+                int x, y, x_orig, y_orig;
+
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+
+                        for (x = 0; x < width; x++)
+                        {
+                            
+                            x_orig = (int)Math.Round(((centerX - ((1 / scaleFactor) * width * 0.5)) + ((1 / scaleFactor) * x)));
+                            y_orig = (int)Math.Round(((centerY - ((1 / scaleFactor) * height * 0.5)) + ((1 / scaleFactor) * y)));
+
+                            if (x_orig < width && x_orig >= 0 && y_orig < height && y_orig >= 0)
+                            {
+                                dataPtr[0] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[0];
+                                dataPtr[1] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[1];
+                                dataPtr[2] = (dataPtrUndo + y_orig * m.widthStep + x_orig * nChan)[2];
+                            }
+                            else
+                            {
+                               dataPtr[0] = (byte)0;
+                               dataPtr[1] = (byte)0;
+                               dataPtr[2] = (byte)0;
+                            }
+
+
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+
+                    }
+                }
+            }
+        }
+
+        public static void Mean(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
         {
             unsafe
             {
@@ -431,16 +747,16 @@ namespace SS_OpenCV
                     }
                 }
             }
-        }
+        } 
 
-        internal static void filNUnif(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo, int[] weight, int weight_factor)
+        public static void NonUniform_not_done(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float[] matrix, float matrixWeight)
         {
             unsafe
             {
                 // direct access to the image memory(sequencial)
                 // direcion top left -> bottom right
                 MIplImage m = img.MIplImage;
-                MIplImage mU = imgUndo.MIplImage;
+                MIplImage mU = imgCopy.MIplImage;
 
                 byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
                 byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
@@ -462,35 +778,35 @@ namespace SS_OpenCV
                             {
                                 //obtém as 3 componentesgrab
 
-                                dataPtr[0] = (byte)((weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                weight[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
-                                weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / weight_factor);
+                                dataPtr[0] = (byte)((matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
-                                dataPtr[1] = (byte)((weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                weight[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
-                                weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / weight_factor);
+                                dataPtr[1] = (byte)((matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
-                                dataPtr[2] = (byte)((weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                weight[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
-                                weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / weight_factor);
+                                dataPtr[2] = (byte)((matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
 
                             }
@@ -500,110 +816,110 @@ namespace SS_OpenCV
                                 if (x != 0 && x != width) //excluir os cantos
                                 {
                                     dataPtr[0] = (byte)((
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    weight[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / weight_factor);
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    weight[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / weight_factor);
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    weight[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / weight_factor);
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
                                 }
 
                                 if (x == 0)//canto sup esq
                                 {
                                     dataPtr[0] = (byte)((
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / weight_factor);
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / weight_factor);
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / weight_factor);
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
                                 }
 
                                 if (x == width)//canto sup esq
                                 {
                                     dataPtr[0] = (byte)((
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) / weight_factor);
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                     weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) / weight_factor);
+                                     matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) / weight_factor);
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) / matrixWeight);
                                 }
                             }
 
@@ -612,37 +928,37 @@ namespace SS_OpenCV
                                 if (y != 0 && y != height) //excluir o canto
                                 {
                                     dataPtr[0] = (byte)((
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / weight_factor);
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / weight_factor);
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / weight_factor);
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
                                 }
                             }
@@ -652,111 +968,111 @@ namespace SS_OpenCV
                                 if (x != 0 && y != height) //excluir os cantos
                                 {
                                     dataPtr[0] = (byte)((
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    weight[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / weight_factor);
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    weight[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / weight_factor);
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                   weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    weight[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / weight_factor);
+                                   matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
                                 }
                                 if (x == 0) //canto inferior esquerdo
                                 {
                                     dataPtr[0] = (byte)((
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    weight[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / weight_factor);
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    weight[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / weight_factor);
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
 
                                     dataPtr[2] = (byte)((
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    weight[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / weight_factor);
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
                                 }
                                 if (x == width) //canto inferior direito
                                 {
                                     dataPtr[0] = (byte)((
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) / weight_factor);
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]) / weight_factor);
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]) / matrixWeight);
 
 
                                     dataPtr[2] = (byte)((
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) / weight_factor);
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) / matrixWeight);
 
                                 }
                             }
@@ -766,37 +1082,37 @@ namespace SS_OpenCV
                                 {
 
                                     dataPtr[0] = (byte)((
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) / weight_factor);
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1]) / weight_factor);
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    weight[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    weight[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
-                                    weight[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    weight[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2]) / weight_factor);
+                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2]) / matrixWeight);
                                 }
 
                             }
@@ -817,9 +1133,9 @@ namespace SS_OpenCV
                     }
                 }
             }
-        }
+        }//change matrix to 2 indexes
 
-        internal static void mediana(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
+        public static void Median(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
         {
             unsafe
             {
@@ -1110,17 +1426,15 @@ namespace SS_OpenCV
             }
         }
 
-        internal static void Histogram(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
+        public static int[,] Histogram_All(Image<Bgr, byte> img)
         {
             unsafe
             {
                 // direct access to the image memory(sequencial)
                 // direcion top left -> bottom right
                 MIplImage m = img.MIplImage;
-                MIplImage mU = imgUndo.MIplImage;
 
                 byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
-                byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
 
                 int width = img.Width;
                 int height = img.Height;
@@ -1129,16 +1443,76 @@ namespace SS_OpenCV
 
                 int x, y;
 
-                int[] blue_array = new int[256];
-                int[] red_array = new int[256];
-                int[] green_array = new int[256];
-                int[] media_array = new int[256];
+                int[,] all = new int[4, 256];
 
                 //iniciar os vectores a zero
-                Array.Clear(red_array, 0, red_array.Length);
-                Array.Clear(blue_array, 0, blue_array.Length);
-                Array.Clear(green_array, 0, green_array.Length);
-                Array.Clear(media_array, 0, media_array.Length);
+                //Array.Clear(red_array, 0, red_array.Length);
+                //Array.Clear(blue_array, 0, blue_array.Length);
+                //Array.Clear(green_array, 0, green_array.Length);
+                //Array.Clear(media_array, 0, media_array.Length);
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                        {
+                            byte blue = 0;
+                            byte red = 0;
+                            byte green = 0;
+                            int media = 0;
+
+                            blue = dataPtr[0];
+                            red = dataPtr[1];
+                            green =dataPtr[2];
+                            media = (int) Math.Round((blue + red + green) / 3.0);
+
+                            all[1,(int)Math.Round(blue*1.0)]++;
+                            all[2,(int)Math.Round(red*1.0)]++;
+                            all[3,(int)Math.Round(green*1.0)]++;
+                            all[0,media]++;
+
+
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+
+                    }
+                }
+                //Histograma_window Histrograma_form = new Histograma_window(all[0,]);
+                //Histrograma_form.ShowDialog();
+                return all;
+            }
+        }
+
+        public static int[,] Histogram_RGB(Image<Bgr, byte> img)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+                MIplImage m = img.MIplImage;
+
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+
+                int x, y;
+
+                int[,] all = new int[3, 256];
+
+                //iniciar os vectores a zero
+                //Array.Clear(red_array, 0, red_array.Length);
+                //Array.Clear(blue_array, 0, blue_array.Length);
+                //Array.Clear(green_array, 0, green_array.Length);
+                //Array.Clear(media_array, 0, media_array.Length);
 
                 if (nChan == 3) // image in RGB
                 {
@@ -1149,37 +1523,94 @@ namespace SS_OpenCV
                             int blue = 0;
                             int red = 0;
                             int green = 0;
-                            int media = 0;
 
-                            blue = (int)(dataPtr[0]);
-                            red = (int)(dataPtr[1]);
-                            green = (int)(dataPtr[2]);
-                            media = (blue + red + green) / 3;
+                            blue = dataPtr[0];
+                            red = dataPtr[1];
+                            green = dataPtr[2];
 
-                            blue_array[blue]++;
-                            red_array[red]++;
-                            green_array[green]++;
-                            media_array[media]++;
+                            all[0, blue]++;
+                            all[1, red]++;
+                            all[2, green]++;
 
 
                             // advance the pointer to the next pixel
                             dataPtr += nChan;
-                            dataPtrUndo += nChan;
 
                         }
 
                         //at the end of the line advance the pointer by the aligment bytes (padding)
                         dataPtr += padding;
-                        dataPtrUndo += padding;
 
                     }
                 }
-                Histograma_window Histrograma_form = new Histograma_window(media_array);
-                Histrograma_form.ShowDialog();
+                //Histograma_window Histrograma_form = new Histograma_window(all[0,]);
+                //Histrograma_form.ShowDialog();
+                return all;
             }
         }
 
-        internal static void sobel_filter(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
+        public static int[] Histogram_Gray(Image<Bgr, byte> img)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+                MIplImage m = img.MIplImage;
+
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+
+                int x, y;
+
+                int[] hist = new int[256];
+
+                //iniciar os vectores a zero
+                //Array.Clear(red_array, 0, red_array.Length);
+                //Array.Clear(blue_array, 0, blue_array.Length);
+                //Array.Clear(green_array, 0, green_array.Length);
+                //Array.Clear(media_array, 0, media_array.Length);
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                        {
+                            byte blue = 0;
+                            byte red = 0;
+                            byte green = 0;
+                            int media = 0;
+
+                            blue = (dataPtr[0]);
+                            red = (dataPtr[1]);
+                            green = dataPtr[2];
+                            media = (int)Math.Round((blue + red + green) / 3.0);
+
+
+                            hist[media]++;
+
+
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+
+                    }
+                }
+                //Histograma_window Histrograma_form = new Histograma_window(hist);
+                //Histrograma_form.ShowDialog();
+                return hist;
+            }
+        }
+
+        public static void Sobel(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
         {
             unsafe
             {
@@ -1195,7 +1626,7 @@ namespace SS_OpenCV
                 int height = img.Height;
                 int nChan = m.nChannels; // number of channels - 3
                 int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
-                int x, y;
+                int x, y,green,blue,red;
 
 
                 if (nChan == 3) // image in RGB
@@ -1208,7 +1639,7 @@ namespace SS_OpenCV
                             {
                                 //obtém as 3 componentesgrab
 
-                                dataPtr[0] = (byte)((
+                                blue = (int)Math.Round((
                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
                                 2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
@@ -1220,9 +1651,11 @@ namespace SS_OpenCV
                                 (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] -
                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
                                 2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
-                                (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]));
+                                (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0])*1.0);
 
-                                dataPtr[1] = (byte)((
+                                dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
+
+                                green = (int)Math.Round((
                                  (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
                                 2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
                                 (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
@@ -1234,9 +1667,12 @@ namespace SS_OpenCV
                                 (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] -
                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] -
                                 2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
-                                (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]));
+                                (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]*1.0));
 
-                                dataPtr[2] = (byte)((
+                                dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
+
+
+                                red = (int)Math.Round((
                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
                                 2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
                                 (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
@@ -1248,7 +1684,10 @@ namespace SS_OpenCV
                                 (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] -
                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] -
                                 2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
-                                (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]));
+                                (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]*1.0));
+
+                                dataPtr[2] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
+
 
                             }
 
@@ -1256,7 +1695,7 @@ namespace SS_OpenCV
                             {
                                 if (x != 0 && x != width) //excluir os cantos
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Round((
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
@@ -1268,9 +1707,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] -
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] * 1.0));
 
-                                    dataPtr[1] = (byte)((
+                                    dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
+
+                                    green = (int)Math.Round((
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
@@ -1282,9 +1723,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] -
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] * 1.0));
 
-                                    dataPtr[2] = (byte)((
+                                dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
+
+                                    red = (int)Math.Round((
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
@@ -1296,13 +1739,15 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] -
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) * 1.0);
+
+                                    dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
 
                                 }
 
                                 if (x == 0)//canto sup esq
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Round((
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] -
@@ -1314,9 +1759,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] -
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) * 1.0);
 
-                                    dataPtr[1] = (byte)((
+ dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
+
+                                    green = (int)Math.Round((
                                      (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] -
@@ -1328,9 +1775,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] -
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) * 1.0);
 
-                                    dataPtr[2] = (byte)((
+                                dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
+
+                                    red = (int)Math.Round((
                                      (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] -
@@ -1342,12 +1791,14 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] -
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] * 1.0));
+
+                                    dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
                                 }
 
                                 if (x == width)//canto sup dir
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Round((
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
@@ -1359,9 +1810,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] -
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
-                                    (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0]));
+                                    (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0]) * 1.0);
 
-                                    dataPtr[1] = (byte)((
+ dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
+
+                                    green = (int)Math.Round((
                                    (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
@@ -1373,9 +1826,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] -
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
-                                    (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1]));
+                                    (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1]) * 1.0);
 
-                                    dataPtr[2] = (byte)((
+                                dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
+
+                                    red = (int)Math.Round((
                                    (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
@@ -1387,7 +1842,7 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] -
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
-                                    (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2]));
+                                    (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2]) * 1.0);
                                 }
                             }
 
@@ -1395,7 +1850,7 @@ namespace SS_OpenCV
                             {
                                 if (y != 0 && y != height) //excluir o canto
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Round((
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
@@ -1407,9 +1862,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] -
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) * 1.0);
 
-                                    dataPtr[1] = (byte)((
+ dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
+
+                                    green = (int)Math.Round((
                                    (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
@@ -1421,9 +1878,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] -
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) * 1.0);
 
-                                    dataPtr[2] = (byte)((
+                                dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
+
+                                    red = (int)Math.Round((
                                    (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
@@ -1435,7 +1894,9 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] -
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) * 1.0);
+
+                                    dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
 
                                 }
                             }
@@ -1444,7 +1905,7 @@ namespace SS_OpenCV
                             {
                                 if (x != 0 && y != height) //excluir os cantos
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Round((
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] -
@@ -1456,9 +1917,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] -
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) * 1.0);
 
-                                    dataPtr[1] = (byte)((
+ dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
+
+                                    green = (int)Math.Round((
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] -
@@ -1470,9 +1933,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] -
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] * 1.0));
 
-                                    dataPtr[2] = (byte)((
+                                dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
+
+                                    red = (int)Math.Round((
                                    (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] -
@@ -1484,12 +1949,14 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] -
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) * 1.0);
+
+                                    dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
 
                                 }
                                 if (x == 0) //canto inferior esquerdo
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Round((
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
@@ -1501,9 +1968,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] -
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) * 1.0);
 
-                                    dataPtr[1] = (byte)((
+ dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
+
+                                    green = (int)Math.Round((
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
@@ -1515,10 +1984,12 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] -
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) * 1.0);
+
+                                dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
 
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Round((
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
                                     2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
@@ -1530,12 +2001,14 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] -
                                     (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
-                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]));
+                                    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) * 1.0);
+
+                                    dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
 
                                 }
                                 if (x == width) //canto inferior direito
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Round((
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
@@ -1547,9 +2020,11 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
-                                    (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]));
+                                    (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) * 1.0);
 
-                                    dataPtr[1] = (byte)((
+ dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
+
+                                    green = (int)Math.Round((
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
@@ -1561,10 +2036,12 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
-                                    (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]));
+                                    (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] * 1.0));
+
+                                dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
 
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Round((
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
                                     2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
@@ -1576,7 +2053,9 @@ namespace SS_OpenCV
                                     (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
                                     (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] -
                                     2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
-                                    (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]));
+                                    (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) * 1.0);
+
+                                    dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
 
                                 }
                             }
@@ -1585,7 +2064,7 @@ namespace SS_OpenCV
                                 if (y != 0 && y != height) //excluir os cantos
                                 {
 
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Round((
                                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
                                                 2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                                 (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
@@ -1597,9 +2076,11 @@ namespace SS_OpenCV
                                                 (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] -
                                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
                                                 2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
-                                                (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]));
+                                                (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) * 1.0);
 
-                                    dataPtr[1] = (byte)((
+ dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
+
+                                    green = (int)Math.Round((
                                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
                                                 2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                                 (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
@@ -1611,9 +2092,11 @@ namespace SS_OpenCV
                                                 (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] -
                                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] -
                                                 2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
-                                                (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]));
+                                                (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1])*1.0);
 
-                                    dataPtr[2] = (byte)((
+                                dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
+
+                                    red = (int)Math.Round((
                                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
                                                 2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                                 (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
@@ -1625,7 +2108,9 @@ namespace SS_OpenCV
                                                 (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] -
                                                 (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] -
                                                 2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
-                                                (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]));
+                                                (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2])*1.0);
+
+                                    dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
                                 }
 
                             }
@@ -1646,9 +2131,9 @@ namespace SS_OpenCV
                     }
                 }
             }
-        }
+        }//saturate at 255
 
-        internal static void diferential_filter(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
+        public static void Diferentiation(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
         {
             unsafe
             {
@@ -1795,9 +2280,9 @@ namespace SS_OpenCV
                     }
                 }
             }
-        }
+        }//border
 
-        internal static void Manual_binarization(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo, int threshold)
+        public static void ConvertToBW(Image<Bgr, byte> img, int threshold)
 
         {
             unsafe
@@ -1805,10 +2290,8 @@ namespace SS_OpenCV
                 // direct access to the image memory(sequencial)
                 // direcion top left -> bottom right
                 MIplImage m = img.MIplImage;
-                MIplImage mU = imgUndo.MIplImage;
 
                 byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
-                byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
 
                 int width = img.Width;
                 int height = img.Height;
@@ -1816,7 +2299,7 @@ namespace SS_OpenCV
                 int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
 
                 int x, y;
-                byte media;
+                int media;
 
 
                 if (nChan == 3) // image in RGB
@@ -1825,13 +2308,13 @@ namespace SS_OpenCV
                     {
                         for (x = 0; x < width; x++)
                         {
-                            int blue = (int)dataPtr[0];
-                            int red = (int)dataPtr[1];
-                            int green = (int)dataPtr[2];
+                            byte blue = dataPtr[0];
+                            byte red = dataPtr[1];
+                            byte green = dataPtr[2];
 
-                            media = (byte)((blue + red + green) / 3);
+                            media = (int)Math.Round(((blue + red + green) / 3.0));
 
-                            if (media < threshold)
+                            if (media <= threshold)
                             {
                                 dataPtr[0] = 0;
                                 dataPtr[1] = 0;
@@ -1847,13 +2330,11 @@ namespace SS_OpenCV
 
                             // advance the pointer to the next pixel
                             dataPtr += nChan;
-                            dataPtrUndo += nChan;
 
                         }
 
                         //at the end of the line advance the pointer by the aligment bytes (padding)
                         dataPtr += padding;
-                        dataPtrUndo += padding;
 
                     }
                 }
@@ -1861,7 +2342,7 @@ namespace SS_OpenCV
             }
         }
 
-        internal static void Otsu(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
+        public static void ConvertToBW_Otsu(Image<Bgr, byte> img)
 
         {
             unsafe
@@ -1869,25 +2350,29 @@ namespace SS_OpenCV
                 // direct access to the image memory(sequencial)
                 // direcion top left -> bottom right
                 MIplImage m = img.MIplImage;
-                MIplImage mU = imgUndo.MIplImage;
 
                 byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
-                byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
 
                 int width = img.Width;
                 int height = img.Height;
                 int nChan = m.nChannels; // number of channels - 3
                 int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
 
-                int x, y, threshold, gray, threshold_out;
+                int x, y, t, gray, threshold_out;
                 double q1, q2, m1, m2;
                 int[] hist = new int[256];
+                //double vari1;
+                //double vari2;
+                double numberPixels = width * height;
+
+
                 //MessageBox alert = new MessageBox(1);
 
                 //iniciar os vectores a zero
                 Array.Clear(hist, 0, hist.Length);
 
-                double vari = 0;
+                double largest_vari = 0;
+                double vari;
 
 
                 if (nChan == 3) // image in RGB
@@ -1900,7 +2385,7 @@ namespace SS_OpenCV
                             int red = (int)dataPtr[1];
                             int green = (int)dataPtr[2];
 
-                            gray = ((blue + red + green) / 3);
+                            gray = (int) Math.Round(((blue + red + green) / 3.0));
 
                             hist[gray]++;
 
@@ -1908,69 +2393,325 @@ namespace SS_OpenCV
 
                             // advance the pointer to the next pixel
                             dataPtr += nChan;
-                            dataPtrUndo += nChan;
 
                         }
                         //at the end of the line advance the pointer by the aligment bytes (padding)
                         dataPtr += padding;
-                        dataPtrUndo += padding;
 
                     }
                 }
 
                 threshold_out = 0;
-
-                for (threshold = 0; threshold < 255; threshold++)
+                vari = 0;
+                for (t = 1; t < 255; t++)
                 {
+                    //System.Diagnostics.Debug.WriteLine("TESTE»»»»»»»:\n");
+
                     q1 = 0;
                     q2 = 0;
                     m1 = 0;
                     m2 = 0;
-                    for (int i = 0; i == 255; i++)
+                    //vari1 = 0;
+                    //vari2 = 0;
+                    vari = 0;
+                    for (int i = 0; i <= 255; i++)
                     {
-                        Console.Write("TESTE»»»»»»»\n:" + hist[i] );
+                        //System.Diagnostics.Debug.WriteLine("TESTE»»»»»»»\n:" + hist[i]);
 
-                        if (hist[i] <= threshold)
+                        if (i<= t)
                         {
-                            Console.Write("TESTE»»»»»»»\nq1:");
+                            //Console.Write("TESTE»»»»»»»\nq1:");
 
-                           q1 = q1 + hist[i] / 256;
-                            m1 = m1 + (hist[i] / 256) * i;
-
+                            q1 = (q1 + hist[i] / numberPixels);
+                            m1 = (m1 + (hist[i] / numberPixels) * i);
                         }
-                        if (hist[i] > threshold)
+                        if (i > t)
                         {
-                            q2 = q2 + hist[i] / 256;
-                            m2 = m2 + (hist[i] / 256) * i;
+                            q2 = (q2 + hist[i] / numberPixels);
+                            m2 = (m2 + (hist[i] / numberPixels) * i);
 
                         }
 
                     }
-                    m1 = m1 / q1;
-                    m2 = m2 / q2;
-                    //Console.Write("TESTE»»»»»»»\nq1:" +q1+"\nq2:"+q2+ "\nm1:" +m1+ "\nm2:" + m2);
+                    if (q1 == 0)
+                        m1 = 0;
+                    else
+                        m1 = m1 / q1;
+                    if (q2 == 0)
+                        m2 = 0;
+                    else
+                        m2 = m2 / q2;
 
-                    if (q1 * q2 * Math.Pow((m1 - m2), 2) < vari)
+                    //for (int i = 0; i <= 255; i++)
+                    //{
+                    //    if (i <= t)
+                    //    {
+                    //        vari1 += Math.Pow((m1 - i), 2) * (hist[i] / numberPixels);
+                    //    }
+                    //    if (i > t)
+                    //    {
+                    //        vari2 += Math.Pow((m2 - i), 2) * (hist[i] / numberPixels);
+                    //    }
+                    //}
+
+                    //vari1 = vari1 / t;
+                    //vari2 = vari2 / (256 - t);
+
+                    //vari = q1 * vari1 + q2 * vari2;
+                    //Console.Write("VARIACE»»»»»»»»:" + vari + "\n");
+
+                    vari = q1 * q2 * Math.Pow((m2-m1),2);
+
+
+                    if ( vari > largest_vari)
                     {
-                        threshold_out = threshold;
-                        vari = q1 * q2 * Math.Pow((m1 - m2), 2);
+
+                        threshold_out = t;
+                        largest_vari = vari;
 
                     }
+                   // Console.Write("VARIACE»»»»»»»»:" + vari+"\n");
 
 
                 }
                 //MessageBox.Show("Chosen Threshold:"+ threshold_out);
-                //Console.Write("TESTE»»»»»»»»" + threshold_out);
-                Manual_binarization(img, imgUndo, threshold_out);
+                Console.Write("Threshold do metodo de otsu: " + threshold_out+"\n");
+                ConvertToBW(img, threshold_out);
 
             }
 
 
         }
 
+        public static void LP_Recognition(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, out Rectangle LP_Location, 
+            out Rectangle LP_Chr1, out Rectangle LP_Chr2, out Rectangle LP_Chr3, out Rectangle LP_Chr4, out Rectangle LP_Chr5, 
+            out Rectangle LP_Chr6, out string LP_C1, out string LP_C2, out string LP_C3, out string LP_C4, out string LP_C5, 
+            out string LP_C6, out string LP_Country, out string LP_Month, out string LP_Year)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+                MIplImage m = img.MIplImage;
+
+               
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+                byte* dataPtr1 = (byte*)m.imageData.ToPointer(); // Pointer to the image
+
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+                int x, y, sobelX, sobelY,sumSobel;
+                    int plateY = 0;
+                    int plateX=0;
+                double maxValue=0;
+                double[] verticalSum = new double[width];
+                double[] horizontalSum = new double[height];
+                int[] window1 = new int[2];
+                int[] window2 = new int[2];
+
+
+
+                //ConvertToGray(img);
+                ConvertToBW_Otsu(img);
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                        {
+                            if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
+                            {
+                                sobelX = (int)Math.Abs(Math.Round((
+                                (dataPtr + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                0.0 * (dataPtr + (-1) * m.widthStep + (0) * nChan)[0] +
+                                -1*(dataPtr + (-1) * m.widthStep + (1) * nChan)[0] +
+                                2*(dataPtr + (0) * m.widthStep + (-1) * nChan)[0] +
+                                0 * (dataPtr + (0) * m.widthStep + (0) * nChan)[0] +
+                                -2*(dataPtr + (0) * m.widthStep + (1) * nChan)[0]) +
+                                ((dataPtr + (1) * m.widthStep + (-1) * nChan)[0] +
+                                0 * (dataPtr + (1) * m.widthStep + (0) * nChan)[0] +
+                                -1*(dataPtr + (1) * m.widthStep + (1) * nChan)[0])));
+
+
+
+
+
+                                if (sobelX > 255)
+                                sobelX = 255;
+                                
+
+
+
+
+                                sobelY = (int)Math.Abs(Math.Round((
+                                -1*(dataPtr + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                -2.0 * (dataPtr + (-1) * m.widthStep + (0) * nChan)[0] +
+                                -1*(dataPtr + (-1) * m.widthStep + (1) * nChan)[0] +
+                                0*(dataPtr + (0) * m.widthStep + (-1) * nChan)[0] +
+                                0 * (dataPtr + (0) * m.widthStep + (0) * nChan)[0] +
+                                0*(dataPtr + (0) * m.widthStep + (1) * nChan)[0]) +
+                                ((dataPtr + (1) * m.widthStep + (-1) * nChan)[0] +
+                                2 * (dataPtr + (1) * m.widthStep + (0) * nChan)[0] +
+                                1*(dataPtr + (1) * m.widthStep + (1) * nChan)[0])));
+
+                            if (sobelY > 255)
+                                sobelY = 255;
+
+
+
+
+                                dataPtr[0] = (byte)sobelY;
+                                dataPtr[1] = (byte)sobelY;
+                                dataPtr[2] = (byte)sobelY;
+
+                                verticalSum[x] += (sobelX/255);
+                                horizontalSum[y] += (sobelX/255);
+
+
+
+                            }
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+
+                    }
+                }
+                for (y = 0; y < height; y++)
+                {
+                        if ((horizontalSum[y]) > maxValue)
+                        {
+                            maxValue =horizontalSum[y];
+                            plateY = y;
+                        }                    
+                }
+
+                maxValue = 0;
+
+                    for (x = 0; x < width; x++)
+                    {
+                        if (verticalSum[x] > maxValue)
+                        {
+                            maxValue = verticalSum[x];
+                            plateX = x;
+
+                        }
+                    }
+
+                    dataPtr1 = (byte*)m.imageData.ToPointer();
+                for (y = 0; y < height; y++)
+                {
+                    for (x = 0; x < width; x++)
+                    {
+                       
+                        if (x == plateX || y== plateY)
+                        {
+
+
+                            (dataPtr1 + (-1) * m.widthStep + (-1) * nChan)[0] = 255;
+                            (dataPtr1 + (-1) * m.widthStep + (0) * nChan)[0] = 255;
+                            (dataPtr1 + (-1) * m.widthStep + (1) * nChan)[0] = 255;
+                            (dataPtr1 + (0) * m.widthStep + (-1) * nChan)[0] = 255;
+                            (dataPtr1 + (0) * m.widthStep + (0) * nChan)[0] = 255;
+                            (dataPtr1 + (0) * m.widthStep + (1) * nChan)[0] = 255;
+                            (dataPtr1 + (1) * m.widthStep + (-1) * nChan)[0] = 255;
+                            (dataPtr1 + (1) * m.widthStep + (0) * nChan)[0] = 255;
+                            (dataPtr1 + (1) * m.widthStep + (1) * nChan)[0] = 255;
+
+
+                        }
+
+
+
+                        // advance the pointer to the next pixel
+                        dataPtr1 += nChan;
+
+                    }
+
+                    //at the end of the line advance the pointer by the aligment bytes (padding)
+                    dataPtr1 += padding;
+
+                }
+
+
+
+
+
+
+
+            LP_Location = new Rectangle(1,2,3,4);
+            LP_Chr1 = new Rectangle(1, 2, 3, 4);
+            LP_Chr2 = new Rectangle(1, 2, 3, 4);
+            LP_Chr3 = new Rectangle(1, 2, 3, 4);
+            LP_Chr4 = new Rectangle(1, 2, 3, 4);
+            LP_Chr5 = new Rectangle(1, 2, 3, 4);
+            LP_Chr6 = new Rectangle(1, 2, 3, 4);
+            LP_C1 = "";
+            LP_C2 = "";
+            LP_C3 = "";
+            LP_C4 = "";
+            LP_C5 = "";
+            LP_C6 = "";
+            LP_Country = "";
+            LP_Month = "";
+            LP_Year = "";
+
+
+            }
+        }
+
+
+
+        //TODO:
+
+        //public static void Mean_solutionB(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy) {
+
+
+        //}
+
+        //public static void Mean_solutionC(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, int size)
+        //{
+
+
+        //}
+
+        //public static void Roberts(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy)
+        //{
+
+
+        //}
+
+        //public static void Rotation_Bilinear(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float angle)
+        //{
+
+
+        //}
+
+        //public static void Scale_Bilinear(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float scaleFactor)
+        //{
+
+
+        //}
+
+        //public static void Scale_point_xy_Bilinear(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float scaleFactor, int centerX, int centerY)
+        //{
+
+
+        //}
+
+
+
+
     }
 
 
 
-}
+    }
 
