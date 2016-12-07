@@ -23,7 +23,7 @@ namespace SS_OpenCV
         {
             InitializeComponent();
             title_bak = Text;
-            new EvalForm().ShowDialog();
+            new EvalForm().ShowDialog(); //TOTEST
         }
 
         /// <summary>
