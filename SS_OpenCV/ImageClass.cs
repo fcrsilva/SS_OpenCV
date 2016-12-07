@@ -2602,6 +2602,7 @@ namespace SS_OpenCV
                 int plateY = 0;
                 int plateX = 0;
                 double maxValue=0;
+                double minValue;
                 double[] verticalSum = new double[width];
                 double[] horizontalSum = new double[height];
                 int[] window1 = new int[2];
@@ -2610,6 +2611,10 @@ namespace SS_OpenCV
 
 
                 //ConvertToGray(img);
+                imgcopy = img.Copy();
+                Mean(img, imgcopy);
+                //imgcopy = img.Copy();
+                //Mean(img, imgcopy);
                 ConvertToBW_Otsu(img);
                 //Negative(img);
                 imgcopy = img.Copy();
@@ -2624,9 +2629,11 @@ namespace SS_OpenCV
                         {
                             if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
                             {
+                                if (dataPtr[0] != (dataPtr + (0) * m.widthStep + (-1) * nChan)[0])//compare with previous value
+                                {
+                                    horizontalSum[y]++;
+                                }
                                
-                                verticalSum[x] += dataPtr[0];
-                                horizontalSum[y] += dataPtr[0];
 
 
 
@@ -2643,32 +2650,71 @@ namespace SS_OpenCV
                 }
                 window1[0] = 0;
                 window1[1] = 10;
-                for (y = 0; y < height; y++)
+                //for (y = 0; y < height; y++)
+                //{
+                //    windowSum = 0;
+                //    if(y+ window1[1] < height)
+                //    for (int i = 0; i< window1[1]; i++)//TODO Remove this loop
+                //    {
+                //        windowSum += horizontalSum[y + i];
+                //    }
+                //    if (windowSum > maxValue)
+                //    {
+                //        maxValue = horizontalSum[y];
+                //        plateY = y;
+                //    }
+                //}
+                windowSum = horizontalSum[0] + horizontalSum[1] + horizontalSum[2] + horizontalSum[3] + horizontalSum[4] + horizontalSum[5] +
+                    horizontalSum[6] + horizontalSum[7] + horizontalSum[8] + horizontalSum[9];
+
+                for (y = 0; y < height-11; y++)
                 {
-                    windowSum = 0;
-                    if(y+ window1[1] < height)
-                    for (int i = 0; i< window1[1]; i++)//TODO Remove this loop
-                    {
-                        windowSum += horizontalSum[y + i];
-                    }
+                    windowSum = windowSum - horizontalSum[y] + horizontalSum[y + 10];
                     if (windowSum > maxValue)
                     {
-                        maxValue = horizontalSum[y];
+                        maxValue = windowSum;
                         plateY = y;
                     }
                 }
 
+                //plateY = (plateY + plateY + 10) / 2;
+                int topY=0;
+                int bottomY = 0;
+
+                windowSum = maxValue;
+                minValue = maxValue;
+
+                for (y = plateY-1; windowSum <= minValue; y--)//TODO implement window
+                {
+                    windowSum = windowSum + horizontalSum[y] - horizontalSum[y + 10];
+                    if (windowSum < minValue)
+                    {
+                        minValue = windowSum;
+                        topY = y;
+                    }
+                    
+                }
+                topY++;
+                windowSum = maxValue;
+                minValue = maxValue;
+
+                for (y = plateY+1; windowSum <= minValue; y++)//TODO implement window
+                {
+                    windowSum = windowSum - horizontalSum[y] + horizontalSum[y + 10];
+                    if (windowSum < minValue)
+                    {
+                        minValue = windowSum;
+                        bottomY = y;
+                    }
+
+                }
+                bottomY--;
+
+
+
                 maxValue = 0;
 
-                for (x = 0; x < width; x++)
-                {
-                    if (verticalSum[x] > maxValue)
-                    {
-                        maxValue = verticalSum[x];
-                        plateX = x;
 
-                    }
-                }
 
                 dataPtr1 = (byte*)m.imageData.ToPointer();
                 for (y = 0; y < height; y++)
@@ -2693,6 +2739,40 @@ namespace SS_OpenCV
 
                         }
 
+                        if (y == topY)
+                        {
+
+
+                            (dataPtr1 + (-1) * m.widthStep + (-1) * nChan)[1] = 255;
+                            (dataPtr1 + (-1) * m.widthStep + (0) * nChan)[1] = 255;
+                            (dataPtr1 + (-1) * m.widthStep + (1) * nChan)[1] = 255;
+                            (dataPtr1 + (0) * m.widthStep + (-1) * nChan)[1] = 255;
+                            (dataPtr1 + (0) * m.widthStep + (0) * nChan)[1] = 255;
+                            (dataPtr1 + (0) * m.widthStep + (1) * nChan)[1] = 255;
+                            (dataPtr1 + (1) * m.widthStep + (-1) * nChan)[1] = 255;
+                            (dataPtr1 + (1) * m.widthStep + (0) * nChan)[1] = 255;
+                            (dataPtr1 + (1) * m.widthStep + (1) * nChan)[1] = 255;
+
+
+                        }
+
+
+                        if (y == bottomY)
+                        {
+
+
+                            (dataPtr1 + (-1) * m.widthStep + (-1) * nChan)[2] = 255;
+                            (dataPtr1 + (-1) * m.widthStep + (0) * nChan)[2] = 255;
+                            (dataPtr1 + (-1) * m.widthStep + (1) * nChan)[2] = 255;
+                            (dataPtr1 + (0) * m.widthStep + (-1) * nChan)[2] = 255;
+                            (dataPtr1 + (0) * m.widthStep + (0) * nChan)[2] = 255;
+                            (dataPtr1 + (0) * m.widthStep + (1) * nChan)[2] = 255;
+                            (dataPtr1 + (1) * m.widthStep + (-1) * nChan)[2] = 255;
+                            (dataPtr1 + (1) * m.widthStep + (0) * nChan)[2] = 255;
+                            (dataPtr1 + (1) * m.widthStep + (1) * nChan)[2] = 255;
+
+
+                        }
 
 
                         // advance the pointer to the next pixel
