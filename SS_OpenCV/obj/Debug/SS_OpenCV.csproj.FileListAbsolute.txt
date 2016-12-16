@@ -128,3 +128,4 @@ C:\Users\Francisco Silva\Desktop\SS_OpenCV\SS_OpenCV\obj\Debug\SS_OpenCV.csproj.
 C:\Users\Francisco Silva\Desktop\SS_OpenCV\SS_OpenCV\obj\Debug\SS_OpenCV.Histograma_window.resources
 C:\Users\Francisco Silva\Desktop\SS_OpenCV\SS_OpenCV\bin\Debug\SS_OpenCV.exe
 C:\Users\Francisco Silva\Desktop\SS_OpenCV\SS_OpenCV\bin\Debug\SS_OpenCV.pdb
+C:\Users\Francisco Silva\Desktop\SS_OpenCV\SS_OpenCV\bin\Debug\SS_Eval.pdb

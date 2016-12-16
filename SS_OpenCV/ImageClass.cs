@@ -749,7 +749,7 @@ namespace SS_OpenCV
             }
         } 
 
-        public static void NonUniform_not_done(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float[] matrix, float matrixWeight)
+        public static void NonUniform(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float[,] matrix, float matrixWeight)
         {
             unsafe
             {
@@ -766,7 +766,16 @@ namespace SS_OpenCV
                 int nChan = m.nChannels; // number of channels - 3
                 int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
                 int x, y;
-
+                float[] matrixaux = new float[9];
+                matrixaux[0] = matrix[0, 0];
+                matrixaux[1] = matrix[0, 1];
+                matrixaux[2] = matrix[0, 2];
+                matrixaux[3] = matrix[1, 0];
+                matrixaux[4] = matrix[1, 1];
+                matrixaux[0] = matrix[1, 2];
+                matrixaux[0] = matrix[2, 0];
+                matrixaux[0] = matrix[2, 1];
+                matrixaux[0] = matrix[2, 2];
 
                 if (nChan == 3) // image in RGB
                 {
@@ -778,35 +787,35 @@ namespace SS_OpenCV
                             {
                                 //obtém as 3 componentesgrab
 
-                                dataPtr[0] = (byte)((matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
-                                matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                dataPtr[0] = (byte)((matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
-                                dataPtr[1] = (byte)((matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
-                                matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                dataPtr[1] = (byte)((matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
-                                dataPtr[2] = (byte)((matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
-                                matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
+                                dataPtr[2] = (byte)((matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
 
                             }
@@ -816,110 +825,110 @@ namespace SS_OpenCV
                                 if (x != 0 && x != width) //excluir os cantos
                                 {
                                     dataPtr[0] = (byte)((
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
                                 }
 
                                 if (x == 0)//canto sup esq
                                 {
                                     dataPtr[0] = (byte)((
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
                                 }
 
                                 if (x == width)//canto sup esq
                                 {
                                     dataPtr[0] = (byte)((
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) / matrixWeight);
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                     matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) / matrixWeight);
+                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) / matrixWeight);
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) / matrixWeight);
                                 }
                             }
 
@@ -928,37 +937,37 @@ namespace SS_OpenCV
                                 if (y != 0 && y != height) //excluir o canto
                                 {
                                     dataPtr[0] = (byte)((
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
                                 }
                             }
@@ -968,111 +977,111 @@ namespace SS_OpenCV
                                 if (x != 0 && y != height) //excluir os cantos
                                 {
                                     dataPtr[0] = (byte)((
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                   matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
+                                   matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[6] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
                                 }
                                 if (x == 0) //canto inferior esquerdo
                                 {
                                     dataPtr[0] = (byte)((
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
 
 
                                     dataPtr[2] = (byte)((
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
 
                                 }
                                 if (x == width) //canto inferior direito
                                 {
                                     dataPtr[0] = (byte)((
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) / matrixWeight);
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]) / matrixWeight);
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]) / matrixWeight);
 
 
                                     dataPtr[2] = (byte)((
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) / matrixWeight);
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[6] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) / matrixWeight);
 
                                 }
                             }
@@ -1082,37 +1091,37 @@ namespace SS_OpenCV
                                 {
 
                                     dataPtr[0] = (byte)((
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) / matrixWeight);
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) / matrixWeight);
 
                                     dataPtr[1] = (byte)((
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1]) / matrixWeight);
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1]) / matrixWeight);
 
                                     dataPtr[2] = (byte)((
-                                    matrix[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
-                                    matrix[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrix[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2]) / matrixWeight);
+                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2]) / matrixWeight);
                                 }
 
                             }
@@ -1165,9 +1174,10 @@ namespace SS_OpenCV
                         for (x = 0; x < width; x++)
                         {
 
+                            if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
+                            {
 
-
-                            blue[0] = (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0];
+                                blue[0] = (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0];
                             blue[1] = (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0];
                             blue[2] = (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0];
                             blue[3] = (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0];
@@ -1196,7 +1206,7 @@ namespace SS_OpenCV
                             red[6] = (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2];
                             red[7] = (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2];
                             red[8] = (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2];
-
+                            }
 
                             if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
                             {
@@ -2602,13 +2612,14 @@ namespace SS_OpenCV
                 int height = img.Height;
                 int nChan = m.nChannels; // number of channels - 3
                 int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
-                int x, y, sobelX, sobelY, sumSobel; 
+                int x, y, sobelX, sobelY, sumSobel;
                 double windowSum;
-                int plateY = 0;
+                int possibleY = 0;
+                int plateY=0;
                 int plateX = 0;
-                double maxValue=0;
+                double maxValue = 0;
                 double minValue;
-                double[] verticalSum = new double[width];
+                int[] verticalSum = new int[width];
                 double[] horizontalSum = new double[height];
                 int[] window1 = new int[2];
                 int[] window2 = new int[2];
@@ -2616,15 +2627,15 @@ namespace SS_OpenCV
 
 
                 //ConvertToGray(img);
-                imgcopy = img.Copy();
-                Mean(img, imgcopy);
+                //imgcopy = img.Copy();
+                //Mean(img, imgcopy);
                 //imgcopy = img.Copy();
                 //Mean(img, imgcopy);
                 ConvertToBW_Otsu(img);
                 //Negative(img);
                 imgcopy = img.Copy();
 
-                Sobel(img,imgcopy);
+                Sobel(img, imgcopy);
 
                 if (nChan == 3) // image in RGB
                 {
@@ -2668,86 +2679,138 @@ namespace SS_OpenCV
                 windowSum = horizontalSum[0] + horizontalSum[1] + horizontalSum[2] + horizontalSum[3] + horizontalSum[4] + horizontalSum[5] +
                     horizontalSum[6] + horizontalSum[7] + horizontalSum[8] + horizontalSum[9];
 
-                for (y = 0; y < height-11; y++)
+                for (y = 0; y < height - 11; y++)//
                 {
                     windowSum = windowSum - horizontalSum[y] + horizontalSum[y + 10];
                     if (windowSum > maxValue)
                     {
                         maxValue = windowSum;
+                        possibleY = y;
                         plateY = y;
                     }
                 }
 
+
+
                 //plateY = (plateY + plateY + 10) / 2;
-                int topY=0;
+                int topY = 0;
                 int bottomY = 0;
 
                 windowSum = maxValue;
                 minValue = maxValue;
+                maxValue = horizontalSum[plateY];
 
-                for (y = plateY-1; windowSum <= minValue; y--)//TODO implement window
+
+                y = possibleY - 1;
+                do
                 {
-                    windowSum = windowSum + horizontalSum[y] - horizontalSum[y + 10];
-                    if (windowSum < minValue)
-                    {
-                        minValue = windowSum;
-                        topY = y;
-                    }
-                    
-                }
+                    y--;
+                    topY = y;
+                } while (horizontalSum[y] > maxValue / 2.2);
+
+
+
                 topY++;
                 windowSum = maxValue;
                 minValue = maxValue;
 
-                for (y = plateY+1; windowSum <= minValue; y++)//TODO implement window
+                y = possibleY;
+                do
                 {
-                    windowSum = windowSum - horizontalSum[y] + horizontalSum[y + 10];
-                    if (windowSum < minValue)
-                    {
-                        minValue = windowSum;
-                        bottomY = y;
-                    }
-
-                }
-                bottomY--;
+                    y++;
+                    bottomY = y;
+                } while (horizontalSum[y] > maxValue / 2.2);
 
 
 
                 maxValue = 0;
 
-                Boolean bluefound = false;
-                Boolean whitefound = false;
-                Boolean yellowfound = false;
+
+                dataPtr1 = (byte*)m.imageData.ToPointer();
                 for (y = 0; y < height; y++)
                 {
                     for (x = 0; x < width; x++)
                     {
                         if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
                         {
-                            if (y == plateY)
+                            if (y > topY && y < bottomY)
                             {
-                                if (bluefound || (dataPtr2[0] > dataPtr2[1] && dataPtr2[0] > dataPtr2[2]))
-                                {
-                                    if (!bluefound)
-                                    {
-                                        plateX = x;
-                                    }
-                                    bluefound = true;
-                                    
-                                    if (whitefound || (dataPtr2[0] + dataPtr2[1] + dataPtr2[2] > 550))
-                                    {
-                                        whitefound = true;
-                                        if (yellowfound || (dataPtr2[1] + dataPtr2[2] >400 && dataPtr2[0] < 100))
-                                        {
-                                            yellowfound = true;
-                                        }
-
-                                    }
-
-
-                                }
+                                verticalSum[x] +=dataPtr1[0];
 
                             }
+
+                        }
+                        // advance the pointer to the next pixel
+                        dataPtr1 += nChan;
+
+                    }
+
+                    //at the end of the line advance the pointer by the aligment bytes (padding)
+                    dataPtr1 += padding;
+
+                }
+
+                topY -= 2;
+                bottomY += 2;
+                dataPtr1 = (byte*)m.imageData.ToPointer();
+                int[] aux = new int[20];
+                for (y = 0; y < height; y++)
+                {
+                    for (x = 0; x < width; x++)
+                    {
+                        if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
+                        {
+                            if (y == topY)
+                            {
+                                if ((dataPtr1 + (-2) * m.widthStep + (-2) * nChan)[0] == 255)
+                                    aux[0] = 0;
+                                if ((dataPtr1 + (-2) * m.widthStep + (-2) * nChan)[0] == 0)
+                                    aux[0] = 1;
+                                if ((dataPtr1 + (-1) * m.widthStep + (-2) * nChan)[0] == 255)
+                                    aux[1] = 0;
+                                if ((dataPtr1 + (-1) * m.widthStep + (-2) * nChan)[0] == 0)
+                                    aux[1] = 1;
+                                if ((dataPtr1 + (-2) * m.widthStep + (-1) * nChan)[0] == 255)
+                                    aux[2] = 0;
+                                if ((dataPtr1 + (-2) * m.widthStep + (-1) * nChan)[0] == 0)
+                                    aux[2] = 1;
+                                if ((dataPtr1 + (0) * m.widthStep + (-2) * nChan)[0] == 255)
+                                    aux[3] = 0;
+                                if ((dataPtr1 + (0) * m.widthStep + (-2) * nChan)[0] == 0)
+                                    aux[3] = 1;
+                                if ((dataPtr1 + (-2) * m.widthStep + (0) * nChan)[0] == 255)
+                                    aux[4] = 0;
+                                if ((dataPtr1 + (-2) * m.widthStep + (0) * nChan)[0] == 0)
+                                    aux[4] = 1;
+                                if ((dataPtr1 + (0) * m.widthStep + (-1) * nChan)[0] == 255)
+                                    aux[8] = 0;
+                                if ((dataPtr1 + (0) * m.widthStep + (-1) * nChan)[0] == 0)
+                                    aux[8] = 1;
+
+
+                                if ((dataPtr1 + (1) * m.widthStep + (0) * nChan)[0] == 255)
+                                    aux[5] = 1;
+                                if ((dataPtr1 + (1) * m.widthStep + (0) * nChan)[0] == 0)
+                                    aux[5] = 0;
+                                if ((dataPtr1 + (1) * m.widthStep + (1) * nChan)[0] == 255)
+                                    aux[6] = 1;
+                                if ((dataPtr1 + (1) * m.widthStep + (1) * nChan)[0] == 0)
+                                    aux[6] = 0;
+                                if ((dataPtr1 + (1) * m.widthStep + (-1) * nChan)[0] == 255)
+                                    aux[7] = 1;
+                                if ((dataPtr1 + (1) * m.widthStep + (-1) * nChan)[0] == 0)
+                                    aux[7] = 0;
+                                if ((dataPtr1 + (0) * m.widthStep + (0) * nChan)[0] == 255)
+                                    aux[9] = 1;
+                                if ((dataPtr1 + (0) * m.widthStep + (0) * nChan)[0] == 0)
+                                    aux[9] = 0;
+
+
+
+                                verticalSum[x] *= ((aux[5]+ aux[6]+ aux[7]) *aux[0] * aux[1] * aux[2] * aux[3]*aux[4]*aux[9]);
+
+                            }
+
                         }
                         // advance the pointer to the next pixel
                         dataPtr1 += nChan;
@@ -2760,6 +2823,150 @@ namespace SS_OpenCV
                 }
 
 
+                maxValue = 0;
+                for (x = 0; x < width; x++)
+                {
+                    if (verticalSum[x] > maxValue)
+                    {
+                        maxValue = verticalSum[x];
+                        plateX = x;
+                    }
+                }
+
+                ////5 valores possiveis de x
+                ////
+                ////
+                ////
+
+                //int[] possibleX = new int [5];
+                //maxValue = 0;
+                //for (x = 0; x < width; x++)
+                //{
+                //    if (verticalSum[x] > maxValue)
+                //    {
+                //        maxValue = verticalSum[x];
+                //        possibleX[0] = x;
+                //    }
+                //}
+
+                //verticalSum[possibleX[0]]=0;
+
+                //maxValue = 0;
+                //for (x = 0; x < width; x++)
+                //{
+                //    if (verticalSum[x] > maxValue)
+                //    {
+                //        maxValue = verticalSum[x];
+                //        possibleX[1] = x;
+                //    }
+                //}
+
+                //verticalSum[possibleX[1]] = 0;
+
+                //maxValue = 0;
+                //for (x = 0; x < width; x++)
+                //{
+                //    if (verticalSum[x] > maxValue)
+                //    {
+                //        maxValue = verticalSum[x];
+                //        possibleX[2] = x;
+                //    }
+                //}
+
+                //verticalSum[possibleX[2]] = 0;
+
+                //maxValue = 0;
+                //for (x = 0; x < width; x++)
+                //{
+                //    if (verticalSum[x] > maxValue)
+                //    {
+                //        maxValue = verticalSum[x];
+                //        possibleX[3] = x;
+                //    }
+                //}
+
+                //verticalSum[possibleX[3]] = 0;
+
+                //maxValue = 0;
+                //for (x = 0; x < width; x++)
+                //{
+                //    if (verticalSum[x] > maxValue)
+                //    {
+                //        maxValue = verticalSum[x];
+                //        possibleX[4] = x;
+                //    }
+                //}
+
+                //verticalSum[possibleX[4]] = 0;
+
+
+                //maxValue = 0;//remover 5 mais provaveis
+                //for (int i = 0; i < 5; i++)
+                //{
+                //    int[] hSum =new int[height];
+                //    dataPtr1 = (byte*)m.imageData.ToPointer();
+                //    for (y = 0; y < height; y++)
+                //    {
+                //        for (x = 0; x < width; x++)
+                //        {
+                //            if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
+                //            {
+                //                if (x == possibleX[i] &&x<width-10 && y<height-10)//TODO PROTEÇÂO
+                //                {
+                //                    hSum[y] = (dataPtr1 + (0) * m.widthStep + (0) * nChan)[0] +
+                //                        (dataPtr1 + (0) * m.widthStep + (1) * nChan)[0] +
+                //                        (dataPtr1 + (0) * m.widthStep + (2) * nChan)[0] + 
+                //                        (dataPtr1 + (0) * m.widthStep + (3) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (4) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (5) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (6) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (7) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (8) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (9) * nChan)[0]+
+                //                        (dataPtr1 + (0) * m.widthStep + (10) * nChan)[0] +
+                //                        (dataPtr1 + (0) * m.widthStep + (11) * nChan)[0] +
+                //                        (dataPtr1 + (0) * m.widthStep + (12) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (13) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (14) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (15) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (16) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (17) * nChan)[0]
+                //                        + (dataPtr1 + (0) * m.widthStep + (18) * nChan)[0] +
+                //                        (dataPtr1 + (1) * m.widthStep + (0) * nChan)[0] +
+                //                        (dataPtr1 + (2) * m.widthStep + (0) * nChan)[0] +
+                //                        (dataPtr1 + (3) * m.widthStep + (0) * nChan)[0]
+                //                        + (dataPtr1 + (4) * m.widthStep + (0) * nChan)[0]
+                //                        + (dataPtr1 + (5) * m.widthStep + (0) * nChan)[0]
+                //                        + (dataPtr1 + (6) * m.widthStep + (0) * nChan)[0]
+                //                        + (dataPtr1 + (7) * m.widthStep + (0) * nChan)[0]
+                //                        + (dataPtr1 + (8) * m.widthStep + (0) * nChan)[0]
+                //                        + (dataPtr1 + (9) * m.widthStep + (0) * nChan)[0];
+
+
+                //                }
+                //            }
+                //            // advance the pointer to the next pixel
+                //            dataPtr1 += nChan;
+
+                //        }
+
+                //        //at the end of the line advance the pointer by the aligment bytes (padding)
+                //        dataPtr1 += padding;
+
+                //    }
+
+                //    for (y = 0; y < height; y++)
+                //    {
+                //        if (hSum[y] > maxValue)
+                //        {
+                //            maxValue = hSum[y];
+                //            plateX = possibleX[i];
+                //            plateY = y;
+                //        }
+                //    }
+
+                //}
+
                 dataPtr1 = (byte*)m.imageData.ToPointer();
                 for (y = 0; y < height; y++)
                 {
@@ -2767,7 +2974,7 @@ namespace SS_OpenCV
                     {
                         if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
                         {
-                            if (x == plateX || y == plateY)
+                            if (y == plateY)
                         {
 
 
@@ -2790,15 +2997,8 @@ namespace SS_OpenCV
                         {
 
 
-                            (dataPtr1 + (-1) * m.widthStep + (-1) * nChan)[1] = 255;
-                            (dataPtr1 + (-1) * m.widthStep + (0) * nChan)[1] = 255;
-                            (dataPtr1 + (-1) * m.widthStep + (1) * nChan)[1] = 255;
-                            (dataPtr1 + (0) * m.widthStep + (-1) * nChan)[1] = 255;
                             (dataPtr1 + (0) * m.widthStep + (0) * nChan)[1] = 255;
-                            (dataPtr1 + (0) * m.widthStep + (1) * nChan)[1] = 255;
-                            (dataPtr1 + (1) * m.widthStep + (-1) * nChan)[1] = 255;
-                            (dataPtr1 + (1) * m.widthStep + (0) * nChan)[1] = 255;
-                            (dataPtr1 + (1) * m.widthStep + (1) * nChan)[1] = 255;
+
 
 
                         }
@@ -2825,15 +3025,8 @@ namespace SS_OpenCV
                             {
 
 
-                                (dataPtr1 + (-1) * m.widthStep + (-1) * nChan)[2] = 255;
-                                (dataPtr1 + (-1) * m.widthStep + (0) * nChan)[2] = 255;
-                                (dataPtr1 + (-1) * m.widthStep + (1) * nChan)[2] = 255;
-                                (dataPtr1 + (0) * m.widthStep + (-1) * nChan)[2] = 255;
                                 (dataPtr1 + (0) * m.widthStep + (0) * nChan)[2] = 255;
-                                (dataPtr1 + (0) * m.widthStep + (1) * nChan)[2] = 255;
-                                (dataPtr1 + (1) * m.widthStep + (-1) * nChan)[2] = 255;
-                                (dataPtr1 + (1) * m.widthStep + (0) * nChan)[2] = 255;
-                                (dataPtr1 + (1) * m.widthStep + (1) * nChan)[2] = 255;
+
 
 
                             }
@@ -2854,7 +3047,7 @@ namespace SS_OpenCV
 
 
 
-                LP_Location = new Rectangle(1,2,3,4);
+                LP_Location = new Rectangle(plateX,plateY,100,100);
             LP_Chr1 = new Rectangle(1, 2, 3, 4);
             LP_Chr2 = new Rectangle(1, 2, 3, 4);
             LP_Chr3 = new Rectangle(1, 2, 3, 4);

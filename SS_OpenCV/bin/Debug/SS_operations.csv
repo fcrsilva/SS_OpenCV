@@ -1,5 +1,5 @@
 1;Negative;Negative;void Negative(Image<Bgr, byte> img)
-2;BrightContrast;Brightness & Contrast;void void contrastBr(Image<Bgr, byte> img, int br, float cont)
+2;BrightContrast;Brightness & Contrast;void BrightContrast(Image<Bgr, byte> img, int bright, double contrast)
 3;RedChannel;Red Channel;void RedChannel(Image<Bgr, byte> img)
 4;Translation;Translation (Dx,Dy) =(-10 , -10);void Translation(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, int dx, int dy)
 5;Rotation;Rotation - 30º;void Rotation(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float angle)
