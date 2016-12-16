@@ -2627,10 +2627,10 @@ namespace SS_OpenCV
 
 
                 //ConvertToGray(img);
-                //imgcopy = img.Copy();
-                //Mean(img, imgcopy);
-                //imgcopy = img.Copy();
-                //Mean(img, imgcopy);
+                imgcopy = img.Copy();
+                Mean(img, imgcopy);
+                imgcopy = img.Copy();
+                Mean(img, imgcopy);
                 ConvertToBW_Otsu(img);
                 //Negative(img);
                 imgcopy = img.Copy();
@@ -2733,13 +2733,14 @@ namespace SS_OpenCV
                     {
                         if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
                         {
-                            if (y > topY && y < bottomY)
-                            {
-                                verticalSum[x] +=dataPtr1[0];
+                            if (y >= topY && y <= bottomY)
+                            {   
+                                if(dataPtr1[0]==255)
+                                verticalSum[x]++;
 
                             }
-
                         }
+
                         // advance the pointer to the next pixel
                         dataPtr1 += nChan;
 
@@ -2762,29 +2763,29 @@ namespace SS_OpenCV
                         {
                             if (y == topY)
                             {
-                                if ((dataPtr1 + (-2) * m.widthStep + (-2) * nChan)[0] == 255)
+                                if ((dataPtr1 + (-3) * m.widthStep + (-3) * nChan)[0] == 255)
                                     aux[0] = 0;
-                                if ((dataPtr1 + (-2) * m.widthStep + (-2) * nChan)[0] == 0)
+                                if ((dataPtr1 + (-3) * m.widthStep + (-3) * nChan)[0] == 0)
                                     aux[0] = 1;
-                                if ((dataPtr1 + (-1) * m.widthStep + (-2) * nChan)[0] == 255)
+                                if ((dataPtr1 + (-2) * m.widthStep + (-3) * nChan)[0] == 255)
                                     aux[1] = 0;
-                                if ((dataPtr1 + (-1) * m.widthStep + (-2) * nChan)[0] == 0)
+                                if ((dataPtr1 + (-2) * m.widthStep + (-3) * nChan)[0] == 0)
                                     aux[1] = 1;
-                                if ((dataPtr1 + (-2) * m.widthStep + (-1) * nChan)[0] == 255)
+                                if ((dataPtr1 + (-3) * m.widthStep + (-2) * nChan)[0] == 255)
                                     aux[2] = 0;
-                                if ((dataPtr1 + (-2) * m.widthStep + (-1) * nChan)[0] == 0)
+                                if ((dataPtr1 + (-3) * m.widthStep + (-2) * nChan)[0] == 0)
                                     aux[2] = 1;
-                                if ((dataPtr1 + (0) * m.widthStep + (-2) * nChan)[0] == 255)
+                                if ((dataPtr1 + (0) * m.widthStep + (-3) * nChan)[0] == 255)
                                     aux[3] = 0;
-                                if ((dataPtr1 + (0) * m.widthStep + (-2) * nChan)[0] == 0)
+                                if ((dataPtr1 + (0) * m.widthStep + (-3) * nChan)[0] == 0)
                                     aux[3] = 1;
-                                if ((dataPtr1 + (-2) * m.widthStep + (0) * nChan)[0] == 255)
+                                if ((dataPtr1 + (-3) * m.widthStep + (0) * nChan)[0] == 255)
                                     aux[4] = 0;
-                                if ((dataPtr1 + (-2) * m.widthStep + (0) * nChan)[0] == 0)
+                                if ((dataPtr1 + (-3) * m.widthStep + (0) * nChan)[0] == 0)
                                     aux[4] = 1;
-                                if ((dataPtr1 + (0) * m.widthStep + (-1) * nChan)[0] == 255)
+                                if ((dataPtr1 + (0) * m.widthStep + (-2) * nChan)[0] == 255)
                                     aux[8] = 0;
-                                if ((dataPtr1 + (0) * m.widthStep + (-1) * nChan)[0] == 0)
+                                if ((dataPtr1 + (0) * m.widthStep + (-2) * nChan)[0] == 0)
                                     aux[8] = 1;
 
 
@@ -2807,7 +2808,7 @@ namespace SS_OpenCV
 
 
 
-                                verticalSum[x] *= ((aux[5]+ aux[6]+ aux[7]) *aux[0] * aux[1] * aux[2] * aux[3]*aux[4]*aux[9]);
+                                verticalSum[x] *= (((aux[5]==1 || aux[6]==1 || aux[7]==1) ? 1 :0) *aux[0] * aux[1] * aux[2] * aux[3]*aux[4]*aux[9] * aux[8]);
 
                             }
 
@@ -2823,149 +2824,21 @@ namespace SS_OpenCV
                 }
 
 
-                maxValue = 0;
+                int maxValue2 = 0;
                 for (x = 0; x < width; x++)
                 {
-                    if (verticalSum[x] > maxValue)
+                    if (verticalSum[x] > maxValue2)
                     {
-                        maxValue = verticalSum[x];
+                        maxValue2 = verticalSum[x];
                         plateX = x;
                     }
                 }
 
-                ////5 valores possiveis de x
-                ////
-                ////
-                ////
-
-                //int[] possibleX = new int [5];
-                //maxValue = 0;
-                //for (x = 0; x < width; x++)
-                //{
-                //    if (verticalSum[x] > maxValue)
-                //    {
-                //        maxValue = verticalSum[x];
-                //        possibleX[0] = x;
-                //    }
-                //}
-
-                //verticalSum[possibleX[0]]=0;
-
-                //maxValue = 0;
-                //for (x = 0; x < width; x++)
-                //{
-                //    if (verticalSum[x] > maxValue)
-                //    {
-                //        maxValue = verticalSum[x];
-                //        possibleX[1] = x;
-                //    }
-                //}
-
-                //verticalSum[possibleX[1]] = 0;
-
-                //maxValue = 0;
-                //for (x = 0; x < width; x++)
-                //{
-                //    if (verticalSum[x] > maxValue)
-                //    {
-                //        maxValue = verticalSum[x];
-                //        possibleX[2] = x;
-                //    }
-                //}
-
-                //verticalSum[possibleX[2]] = 0;
-
-                //maxValue = 0;
-                //for (x = 0; x < width; x++)
-                //{
-                //    if (verticalSum[x] > maxValue)
-                //    {
-                //        maxValue = verticalSum[x];
-                //        possibleX[3] = x;
-                //    }
-                //}
-
-                //verticalSum[possibleX[3]] = 0;
-
-                //maxValue = 0;
-                //for (x = 0; x < width; x++)
-                //{
-                //    if (verticalSum[x] > maxValue)
-                //    {
-                //        maxValue = verticalSum[x];
-                //        possibleX[4] = x;
-                //    }
-                //}
-
-                //verticalSum[possibleX[4]] = 0;
-
-
-                //maxValue = 0;//remover 5 mais provaveis
-                //for (int i = 0; i < 5; i++)
-                //{
-                //    int[] hSum =new int[height];
-                //    dataPtr1 = (byte*)m.imageData.ToPointer();
-                //    for (y = 0; y < height; y++)
-                //    {
-                //        for (x = 0; x < width; x++)
-                //        {
-                //            if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
-                //            {
-                //                if (x == possibleX[i] &&x<width-10 && y<height-10)//TODO PROTEÇÂO
-                //                {
-                //                    hSum[y] = (dataPtr1 + (0) * m.widthStep + (0) * nChan)[0] +
-                //                        (dataPtr1 + (0) * m.widthStep + (1) * nChan)[0] +
-                //                        (dataPtr1 + (0) * m.widthStep + (2) * nChan)[0] + 
-                //                        (dataPtr1 + (0) * m.widthStep + (3) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (4) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (5) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (6) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (7) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (8) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (9) * nChan)[0]+
-                //                        (dataPtr1 + (0) * m.widthStep + (10) * nChan)[0] +
-                //                        (dataPtr1 + (0) * m.widthStep + (11) * nChan)[0] +
-                //                        (dataPtr1 + (0) * m.widthStep + (12) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (13) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (14) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (15) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (16) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (17) * nChan)[0]
-                //                        + (dataPtr1 + (0) * m.widthStep + (18) * nChan)[0] +
-                //                        (dataPtr1 + (1) * m.widthStep + (0) * nChan)[0] +
-                //                        (dataPtr1 + (2) * m.widthStep + (0) * nChan)[0] +
-                //                        (dataPtr1 + (3) * m.widthStep + (0) * nChan)[0]
-                //                        + (dataPtr1 + (4) * m.widthStep + (0) * nChan)[0]
-                //                        + (dataPtr1 + (5) * m.widthStep + (0) * nChan)[0]
-                //                        + (dataPtr1 + (6) * m.widthStep + (0) * nChan)[0]
-                //                        + (dataPtr1 + (7) * m.widthStep + (0) * nChan)[0]
-                //                        + (dataPtr1 + (8) * m.widthStep + (0) * nChan)[0]
-                //                        + (dataPtr1 + (9) * m.widthStep + (0) * nChan)[0];
-
-
-                //                }
-                //            }
-                //            // advance the pointer to the next pixel
-                //            dataPtr1 += nChan;
-
-                //        }
-
-                //        //at the end of the line advance the pointer by the aligment bytes (padding)
-                //        dataPtr1 += padding;
-
-                //    }
-
-                //    for (y = 0; y < height; y++)
-                //    {
-                //        if (hSum[y] > maxValue)
-                //        {
-                //            maxValue = hSum[y];
-                //            plateX = possibleX[i];
-                //            plateY = y;
-                //        }
-                //    }
-
-                //}
+                int scaleFactor = 5;
+                int plateH = bottomY - topY;
+                int plateW =plateH*scaleFactor;
+                int plateL = plateX;
+                int plateR = plateL + plateW;
 
                 dataPtr1 = (byte*)m.imageData.ToPointer();
                 for (y = 0; y < height; y++)
@@ -2974,22 +2847,7 @@ namespace SS_OpenCV
                     {
                         if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
                         {
-                            if (y == plateY)
-                        {
 
-
-                            (dataPtr1 + (-1) * m.widthStep + (-1) * nChan)[0] = 255;
-                            (dataPtr1 + (-1) * m.widthStep + (0) * nChan)[0] = 255;
-                            (dataPtr1 + (-1) * m.widthStep + (1) * nChan)[0] = 255;
-                            (dataPtr1 + (0) * m.widthStep + (-1) * nChan)[0] = 255;
-                            (dataPtr1 + (0) * m.widthStep + (0) * nChan)[0] = 255;
-                            (dataPtr1 + (0) * m.widthStep + (1) * nChan)[0] = 255;
-                            (dataPtr1 + (1) * m.widthStep + (-1) * nChan)[0] = 255;
-                            (dataPtr1 + (1) * m.widthStep + (0) * nChan)[0] = 255;
-                            (dataPtr1 + (1) * m.widthStep + (1) * nChan)[0] = 255;
-
-
-                        }
 
 
 
@@ -3021,12 +2879,23 @@ namespace SS_OpenCV
 
                         }
 
-                            if (x == plateX)
+                            if (verticalSum[x]!=0)
+                            {
+
+
+                                //s(dataPtr1 + (0) * m.widthStep + (0) * nChan)[2] = 255;
+
+
+
+                            }
+
+                            if (x == plateL || x==plateR)
                             {
 
 
                                 (dataPtr1 + (0) * m.widthStep + (0) * nChan)[2] = 255;
-
+                                (dataPtr1 + (0) * m.widthStep + (0) * nChan)[0] = 255;
+                                (dataPtr1 + (0) * m.widthStep + (0) * nChan)[1] = 255;
 
 
                             }
@@ -3042,13 +2911,15 @@ namespace SS_OpenCV
 
                 }
 
-               
 
 
+                img = imgCores.Copy();
 
 
-                LP_Location = new Rectangle(plateX,plateY,100,100);
-            LP_Chr1 = new Rectangle(1, 2, 3, 4);
+                LP_Location = new Rectangle(plateL, topY, plateW,plateH);
+                img = imgCores.Copy();
+                img.ROI = LP_Location;
+               LP_Chr1 = new Rectangle(1, 2, 3, 4);
             LP_Chr2 = new Rectangle(1, 2, 3, 4);
             LP_Chr3 = new Rectangle(1, 2, 3, 4);
             LP_Chr4 = new Rectangle(1, 2, 3, 4);
