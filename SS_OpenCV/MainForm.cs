@@ -23,7 +23,7 @@ namespace SS_OpenCV
         {
             InitializeComponent();
             title_bak = Text;
-            new EvalForm().ShowDialog(); //TOTEST
+            //new EvalForm().ShowDialog(); //TOTEST
         }
 
         /// <summary>
@@ -335,6 +335,40 @@ namespace SS_OpenCV
         private void evalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new SS_OpenCV.EvalForm().ShowDialog();
+        }
+
+        private void plateTestingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (img == null) // protege de executar a função sem ainda ter aberto a imagem 
+                return;
+
+            Cursor = Cursors.WaitCursor; // cursor relogio
+            //copy Undo Image
+            imgUndo = img.Copy();
+            Rectangle loc;
+            Rectangle lp1;
+            Rectangle lp2;
+            Rectangle lp3;
+            Rectangle lp4;
+            Rectangle lp5;
+            Rectangle lp6;
+
+            string l1;
+            string l2;
+            string l3;
+            string l4;
+            string l5;
+            string l6;
+            string l7;
+            string l8;
+            string l9;
+
+            ImageClass.LP_Recognition(img,imgUndo,out loc, out lp1,out lp2, out lp3, out lp4, out lp5, out lp6,out l1,out l2,out l3,out l4, out l5,out l6, out l7, out l8, out l9);
+            img.ROI = loc;
+            img = img.Copy();
+            ImageViewer.Refresh(); // atualiza imagem no ecrã
+            Cursor = Cursors.Default;
+
         }
     }
 }
