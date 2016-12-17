@@ -1179,7 +1179,7 @@ namespace SS_OpenCV
                     }
                 }
             }
-        }
+        }//not working
 
         public static int[,] Histogram_All(Image<Bgr, byte> img)
         {
@@ -2678,7 +2678,108 @@ namespace SS_OpenCV
         }
 
         public static void CharLoc(Image<Bgr, byte> img)
-        { }
+        {//binarizacao e dpeois mudanças de 0 para 1 e ta feito
+        }
+
+        public static void Roberts(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+                MIplImage m = img.MIplImage;
+                MIplImage mU = imgCopy.MIplImage;
+
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+                byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+                int x, y, green, blue, red, robX=0, robY=0, sumRob;
+
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                        {
+                            if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
+                            {
+
+                                robX = (int)Math.Abs(Math.Round((
+                                1.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) +
+                                0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                -1 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]));
+
+                                robY = (int)Math.Abs(Math.Round((
+                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                1 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) +
+                                -1.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                0 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]));
+
+                                if (robX + robY > 255)
+                                    sumRob = 255;
+                                else
+                                    sumRob = robX + robY;
+                                dataPtr[0] = (byte)sumRob;
+
+                    robX = (int)Math.Abs(Math.Round((
+                    1.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                    0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) +
+                    0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                    -1 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]));
+
+                    robY = (int)Math.Abs(Math.Round((
+                    0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                    1 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) +
+                    -1.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                    0 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]));
+
+                    if (robX + robY > 255)
+                                    sumRob = 255;
+                                else
+                                    sumRob = robX + robY;
+                                dataPtr[1] = (byte)sumRob;
+
+                                robX = (int)Math.Abs(Math.Round((
+                                 1.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                 0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) +
+                                 0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                 -1 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]));
+
+                                robY = (int)Math.Abs(Math.Round((
+                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                1 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) +
+                                -1.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                0 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]));
+
+                                if (robX + robY > 255)
+                                    sumRob = 255;
+                                else
+                                    sumRob = robX + robY;
+                                dataPtr[2] = (byte)sumRob;
+
+                            }
+
+
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+                            dataPtrUndo += nChan;
+
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+                        dataPtrUndo += padding;
+
+                    }
+                }
+            }
+        }
 
         //TODO:
 
@@ -2692,9 +2793,6 @@ namespace SS_OpenCV
 
 
         //}
-
-        //public static void Roberts(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy)
-        //{
 
 
         //}
