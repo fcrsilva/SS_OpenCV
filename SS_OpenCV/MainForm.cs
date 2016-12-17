@@ -15,6 +15,8 @@ namespace SS_OpenCV
     {
         Image<Bgr, Byte> img = null; // working image
         Image<Bgr, Byte> imgUndo = null; // undo backup image - UNDO
+        Image<Bgr, Byte> imgPlate = null; // image plate
+
         string title_bak = "";
         public int[] weighttest = new int[9];
         public int weight_factortest;
@@ -365,11 +367,33 @@ namespace SS_OpenCV
 
             ImageClass.LP_Recognition(img,imgUndo,out loc, out lp1,out lp2, out lp3, out lp4, out lp5, out lp6,out l1,out l2,out l3,out l4, out l5,out l6, out l7, out l8, out l9);
             img.ROI = loc;
-            img = img.Copy();
+            imgUndo = img.Copy();
+            imgPlate = img.Copy();
+            ImageClass.ConvertToBW_Otsu(imgPlate);
+            //ImageClass.CharLoc(imgPlate,imgUndo);
             ImageViewer.Refresh(); // atualiza imagem no ecrã
             Cursor = Cursors.Default;
 
+            String win1 = "Test Window";
+
+            //Create the window using the specific name
+            CvInvoke.cvNamedWindow(win1);
+
+            //Create an image of 400x200 of Blue color
+            using (imgPlate)
+            {
+
+                //Show the image
+                CvInvoke.cvShowImage(win1, img.Ptr);
+                //Wait for the key pressing event
+                CvInvoke.cvWaitKey(0);
+                //Destory the window
+                CvInvoke.cvDestroyWindow(win1);
+            }
+
         }
+
+
     }
 }
  

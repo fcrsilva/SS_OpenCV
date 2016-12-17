@@ -887,7 +887,7 @@ namespace SS_OpenCV
                     }
                 }
             }
-        }//change matrix to 2 indexes
+        }
 
         public static void Median(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
         {
@@ -1482,215 +1482,23 @@ namespace SS_OpenCV
 
 
 
-
-
-
-
-
-                                //blue = (int)Math.Round((
-                                //(dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                //2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                //(dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
-                                //(dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
-                                //2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] -
-                                //(dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) +
-                                //((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                //2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                //(dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] -
-                                //(dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
-                                //2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
-                                //(dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0])*1.0);
-
-                                //dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
-
-                                //green = (int)Math.Round((
-                                // (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                //2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                //(dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
-                                //(dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
-                                //2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] -
-                                //(dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) +
-                                //((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                //2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                //(dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] -
-                                //(dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] -
-                                //2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
-                                //(dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]*1.0));
-
-                                //dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
-
-
-                                //red = (int)Math.Round((
-                                //(dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                //2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                //(dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
-                                //(dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
-                                //2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] -
-                                //(dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) +
-                                //((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                //2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                //(dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] -
-                                //(dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] -
-                                //2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
-                                //(dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]*1.0));
-
-                                //dataPtr[2] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
-
-
                             }
 
                             if (y == 0) //primeira linha
                             {
                                 if (x != 0 && x != width) //excluir os cantos
                                 {
-                                //    blue = (int)Math.Round((
-                                //    (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                //    2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                //    (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
-                                //    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
-                                //    2 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
-                                //    (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) +
-                                //    ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                //    2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                //    (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] -
-                                //    (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] -
-                                //    2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
-                                //    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] * 1.0));
-
-                                //    dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
-
-                                //    green = (int)Math.Round((
-                                //    (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                //    2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                //    (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
-                                //    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
-                                //    2 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
-                                //    (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) +
-                                //    ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                //    2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                //    (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] -
-                                //    (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] -
-                                //    2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
-                                //    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] * 1.0));
-
-                                //dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
-
-                                //    red = (int)Math.Round((
-                                //    (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                //    2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                //    (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
-                                //    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
-                                //    2 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
-                                //    (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) +
-                                //    ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                //    2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                //    (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] -
-                                //    (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] -
-                                //    2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
-                                //    (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) * 1.0);
-
-                                //    dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
-
+                               
                                 }
 
                                 if (x == 0)//canto sup esq
                                 {
- //                                   blue = (int)Math.Round((
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) +
- //                                   ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) * 1.0);
-
- //dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
-
- //                                   green = (int)Math.Round((
- //                                    (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) +
- //                                   ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) * 1.0);
-
- //                               dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
-
- //                                   red = (int)Math.Round((
- //                                    (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) +
- //                                   ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] * 1.0));
-
- //                                   dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
+ //                                  
                                 }
 
                                 if (x == width)//canto sup dir
                                 {
- //                                   blue = (int)Math.Round((
- //                                   (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) +
- //                                   ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] -
- //                                   (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0]) * 1.0);
-
- //dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
-
- //                                   green = (int)Math.Round((
- //                                  (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) +
- //                                   ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] -
- //                                   (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1]) * 1.0);
-
- //                               dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
-
- //                                   red = (int)Math.Round((
- //                                  (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) +
- //                                   ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] -
- //                                   (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2]) * 1.0);
+ //                                  
                                 }
                             }
 
@@ -1698,54 +1506,7 @@ namespace SS_OpenCV
                             {
                                 if (y != 0 && y != height) //excluir o canto
                                 {
- //                                   blue = (int)Math.Round((
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) +
- //                                   ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) * 1.0);
-
- //dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
-
- //                                   green = (int)Math.Round((
- //                                  (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) +
- //                                   ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) * 1.0);
-
- //                               dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
-
- //                                   red = (int)Math.Round((
- //                                  (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) +
- //                                   ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) * 1.0);
-
- //                                   dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
-
+                         
                          }
                             }
 
@@ -1753,157 +1514,15 @@ namespace SS_OpenCV
                             {
                                 if (x != 0 && y != height) //excluir os cantos
                                 {
- //                                   blue = (int)Math.Round((
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) +
- //                                   ((dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) * 1.0);
-
- //dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
-
- //                                   green = (int)Math.Round((
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1]) +
- //                                   ((dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] * 1.0));
-
- //                               dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
-
- //                                   red = (int)Math.Round((
- //                                  (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2]) +
- //                                   ((dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) * 1.0);
-
- //                                   dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
-
+ //                                 
                                 }
                                 if (x == 0) //canto inferior esquerdo
                                 {
- //                                   blue = (int)Math.Round((
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) +
- //                                   ((dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) * 1.0);
-
- //dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
-
- //                                   green = (int)Math.Round((
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1]) +
- //                                   ((dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) * 1.0);
-
- //                               dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
-
-
- //                                   red = (int)Math.Round((
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2]) +
- //                                   ((dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
- //                                   (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) * 1.0);
-
- //                                   dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
-
+ //                                   
                                 }
                                 if (x == width) //canto inferior direito
                                 {
- //                                   blue = (int)Math.Round((
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0]) +
- //                                   ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) * 1.0);
 
- //dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
-
- //                                   green = (int)Math.Round((
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1]) +
- //                                   ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] * 1.0));
-
- //                               dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
-
-
- //                                   red = (int)Math.Round((
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
- //                                   (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
- //                                   (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2]) +
- //                                   ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
- //                                   (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
- //                                   (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] -
- //                                   2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
- //                                   (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) * 1.0);
-
- //                                   dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
 
                                 }
                             }
@@ -1911,59 +1530,9 @@ namespace SS_OpenCV
                             {
                                 if (y != 0 && y != height) //excluir os cantos
                                 {
-
-                                            //                                   blue = (int)Math.Round((
-                                            //                                               (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
-                                            //                                               2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
-                                            //                                               (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] -
-                                            //                                               (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] -
-                                            //                                               2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] -
-                                            //                                               (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) +
-                                            //                                               ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
-                                            //                                               2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                            //                                               (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] -
-                                            //                                               (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] -
-                                            //                                               2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] -
-                                            //                                               (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) * 1.0);
-
-                                            //dataPtr[0] = Math.Abs(blue)>=0 && Math.Abs(blue) <= 255 ? (byte) Math.Abs(blue) : (byte)255;
-
-                                            //                                   green = (int)Math.Round((
-                                            //                                               (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
-                                            //                                               2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
-                                            //                                               (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] -
-                                            //                                               (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] -
-                                            //                                               2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] -
-                                            //                                               (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) +
-                                            //                                               ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
-                                            //                                               2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                            //                                               (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] -
-                                            //                                               (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] -
-                                            //                                               2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] -
-                                            //                                               (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1])*1.0);
-
-                                            //                               dataPtr[1] = Math.Abs(green) >= 0 && Math.Abs(green) <= 255 ? (byte)Math.Abs(green) : (byte)255;
-
-                                            //                                   red = (int)Math.Round((
-                                            //                                               (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
-                                            //                                               2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
-                                            //                                               (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] -
-                                            //                                               (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] -
-                                            //                                               2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] -
-                                            //                                               (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) +
-                                            //                                               ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
-                                            //                                               2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                            //                                               (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] -
-                                            //                                               (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] -
-                                            //                                               2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] -
-                                            //                                               (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2])*1.0);
-
-                                            //                                   dataPtr[1] = Math.Abs(red) >= 0 && Math.Abs(red) <= 255 ? (byte)Math.Abs(red) : (byte)255;
-                                        }
+  }
 
                             }
-
-
 
 
                             // advance the pointer to the next pixel
@@ -2341,15 +1910,12 @@ namespace SS_OpenCV
                 // direct access to the image memory(sequencial)
                 // direcion top left -> bottom right
                 MIplImage m = imgCopy.MIplImage;
-                Image<Bgr, byte> imgcopy, imgCores;
+                Image<Bgr, byte> imgcopy, imgUndo;
                 imgcopy = imgCopy.Copy();
-                imgCores = imgCopy.Copy();
-                MIplImage color = imgCores.MIplImage;
 
 
                 byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
                 byte* dataPtr1 = (byte*)m.imageData.ToPointer(); // Pointer to the image
-                byte* dataPtr2 = (byte*)color.imageData.ToPointer(); // Pointer to the image
 
 
 
@@ -2652,8 +2218,14 @@ namespace SS_OpenCV
             LP_Location = new Rectangle(plateL, topY, plateW,plateH);
 
                 //LOCALIZAÇÃO DOS CARACTERES
-                //img.ROI = LP_Location;
 
+                //ConvertToBW_Otsu(img);
+                //img.ROI = LP_Location;
+                //ConvertToBW_Otsu(img);
+                //imgUndo = img.Copy();
+                //img.Draw(LP_Location, new Bgr(Color.Red), 1);
+                //img = imgcopy.Copy();
+                //CharLoc(img, imgUndo);
 
 
 
@@ -2673,12 +2245,75 @@ namespace SS_OpenCV
             LP_Month = "";
             LP_Year = "";
 
-
+                imgcopy = img.Copy();
             }
         }
 
-        public static void CharLoc(Image<Bgr, byte> img)
+        public static void CharLoc(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
         {//binarizacao e dpeois mudanças de 0 para 1 e ta feito
+            unsafe
+            {
+                MIplImage m = img.MIplImage;
+            byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+            byte* dataPtr1 = (byte*)m.imageData.ToPointer(); // Pointer to the image
+
+            int width = img.Width;
+            int height = img.Height;
+            int nChan = m.nChannels; // number of channels - 3
+            int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+            int x, y;
+                int[] verticalSum = new int[width];
+                Mean(img, imgUndo);
+                ConvertToBW_Otsu(img);
+
+                dataPtr = (byte*)m.imageData.ToPointer();
+            for (y = 0; y < height; y++)
+            {
+                for (x = 0; x < width; x++)
+                {
+                    if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
+                    {
+                            if (dataPtr[0] != (dataPtr + (0) * m.widthStep + (-1) * nChan)[0])
+                                verticalSum[x]++;
+
+                    }
+
+                    // advance the pointer to the next pixel
+                    dataPtr += nChan;
+
+                }
+
+                //at the end of the line advance the pointer by the aligment bytes (padding)
+                dataPtr += padding;
+
+            }
+
+
+                for (y = 0; y < height; y++)
+                {
+                    for (x = 0; x < width; x++)
+                    {
+                        if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
+                        {
+                            if (verticalSum[x]>=10)
+                            {
+                                dataPtr1[0] = 255;
+
+                            }
+
+                        }
+                        // advance the pointer to the next pixel
+                        dataPtr1 += nChan;
+
+                    }
+
+                    //at the end of the line advance the pointer by the aligment bytes (padding)
+                    dataPtr1 += padding;
+
+                }
+
+            }
+
         }
 
         public static void Roberts(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy)
@@ -2794,8 +2429,6 @@ namespace SS_OpenCV
 
         //}
 
-
-        //}
 
         //public static void Rotation_Bilinear(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, float angle)
         //{
