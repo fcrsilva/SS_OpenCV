@@ -347,6 +347,13 @@ namespace SS_OpenCV
             Cursor = Cursors.WaitCursor; // cursor relogio
             //copy Undo Image
             imgUndo = img.Copy();
+            imgPlate = img.Copy();
+            //Image<Bgr, Byte> imgChar1 = null;
+            //Image<Bgr, Byte> imgChar2 = null;
+            //Image<Bgr, Byte> imgChar3 = null;
+            //Image<Bgr, Byte> imgChar4 = null;
+            //Image<Bgr, Byte> imgChar5 = null;
+            //Image<Bgr, Byte> imgChar6 = null;
             Rectangle loc;
             Rectangle lp1;
             Rectangle lp2;
@@ -366,30 +373,23 @@ namespace SS_OpenCV
             string l9;
 
             ImageClass.LP_Recognition(img,imgUndo,out loc, out lp1,out lp2, out lp3, out lp4, out lp5, out lp6,out l1,out l2,out l3,out l4, out l5,out l6, out l7, out l8, out l9);
-            img.ROI = loc;
-            imgUndo = img.Copy();
-            imgPlate = img.Copy();
-            ImageClass.ConvertToBW_Otsu(imgPlate);
-            //ImageClass.CharLoc(imgPlate,imgUndo);
+
+
+            Console.Write(l1);
+            Console.Write(l2);
+
+            //Image<Bgr, Byte> test = imgPlate.Copy();
+            //ImageClass.ConvertToBW(test, 100);
+            img = imgUndo.Copy();
+            Console.Write("-" + l3 + l4 + "-" + l5 + l6);
+            ImageViewer.SizeMode = PictureBoxSizeMode.Zoom;
+            ImageViewer.Dock = DockStyle.Fill;
+            ImageViewer.Image = img.Bitmap;
             ImageViewer.Refresh(); // atualiza imagem no ecrã
             Cursor = Cursors.Default;
+            
 
-            String win1 = "Test Window";
-
-            //Create the window using the specific name
-            CvInvoke.cvNamedWindow(win1);
-
-            //Create an image of 400x200 of Blue color
-            using (imgPlate)
-            {
-
-                //Show the image
-                CvInvoke.cvShowImage(win1, img.Ptr);
-                //Wait for the key pressing event
-                CvInvoke.cvWaitKey(0);
-                //Destory the window
-                CvInvoke.cvDestroyWindow(win1);
-            }
+ 
 
         }
 

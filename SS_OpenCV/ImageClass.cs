@@ -5,6 +5,7 @@ using Emgu.CV.Structure;
 using Emgu.CV;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Linq;
 
 namespace SS_OpenCV
 {
@@ -1892,7 +1893,7 @@ namespace SS_OpenCV
 
                 }
                 //MessageBox.Show("Chosen Threshold:"+ threshold_out);
-                Console.Write("Threshold do metodo de otsu: " + threshold_out+"\n");
+                //Console.Write("Threshold do metodo de otsu: " + threshold_out+"\n");
                 ConvertToBW(img, threshold_out);
 
             }
@@ -1900,18 +1901,30 @@ namespace SS_OpenCV
 
         }
 
-        public static void LP_Recognition( Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, out Rectangle LP_Location, 
+        public static void LP_Recognition(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy, out Rectangle LP_Location, 
             out Rectangle LP_Chr1, out Rectangle LP_Chr2, out Rectangle LP_Chr3, out Rectangle LP_Chr4, out Rectangle LP_Chr5, 
             out Rectangle LP_Chr6, out string LP_C1, out string LP_C2, out string LP_C3, out string LP_C4, out string LP_C5, 
             out string LP_C6, out string LP_Country, out string LP_Month, out string LP_Year)
         {
             unsafe
             {
+
+                Image<Bgr, Byte> imgChar1 = null;
+                Image<Bgr, Byte> imgChar2 = null;
+                Image<Bgr, Byte> imgChar3 = null;
+                Image<Bgr, Byte> imgChar4 = null;
+                Image<Bgr, Byte> imgChar5 = null;
+                Image<Bgr, Byte> imgChar6 = null;
+                Image<Bgr, Byte> imgPlate = null;
+                Image<Bgr, Byte> imgUndo = null;
+                Image<Bgr, Byte> imgauxiliar = img.Copy();
+                imgUndo = img.Copy();
+                imgPlate = img.Copy();
+
+
                 // direct access to the image memory(sequencial)
                 // direcion top left -> bottom right
-                MIplImage m = imgCopy.MIplImage;
-                Image<Bgr, byte> imgcopy, imgUndo;
-                imgcopy = imgCopy.Copy();
+                MIplImage m = img.MIplImage;
 
 
                 byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
@@ -1919,8 +1932,8 @@ namespace SS_OpenCV
 
 
 
-                int width = imgCopy.Width;
-                int height = imgCopy.Height;
+                int width = img.Width;
+                int height = img.Height;
                 int nChan = m.nChannels; // number of channels - 3
                 int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
                 int x, y;
@@ -1938,15 +1951,17 @@ namespace SS_OpenCV
 
 
                 //ConvertToGray(img);
-                imgcopy = imgCopy.Copy();
-                Mean(imgCopy, imgcopy);
-                imgcopy = imgCopy.Copy();
-                Mean(imgCopy, imgcopy);
-                ConvertToBW_Otsu(imgCopy);
-                //Negative(img);
-                imgcopy = imgCopy.Copy();
 
-                Sobel(imgCopy, imgcopy);
+                Mean(img, imgCopy);
+                imgCopy = img.Copy();
+                Mean(img, imgCopy);
+
+                imgCopy = img.Copy();
+                ConvertToBW_Otsu(img);
+                //Negative(img);
+
+                imgCopy = img.Copy();
+                Sobel(img, imgCopy);
 
                 if (nChan == 3) // image in RGB
                 {
@@ -2219,37 +2234,60 @@ namespace SS_OpenCV
 
                 //LOCALIZAÇÃO DOS CARACTERES
 
-                //ConvertToBW_Otsu(img);
-                //img.ROI = LP_Location;
-                //ConvertToBW_Otsu(img);
-                //imgUndo = img.Copy();
-                //img.Draw(LP_Location, new Bgr(Color.Red), 1);
-                //img = imgcopy.Copy();
-                //CharLoc(img, imgUndo);
+                Image<Bgr, Byte> imgaux = imgUndo.Copy();
+                imgPlate.ROI = LP_Location;
+                imgaux = imgPlate.Copy();
+                imgUndo = imgaux.Copy();
+                ImageClass.CharLoc(imgaux, imgUndo, plateL, topY, out LP_Chr1, out LP_Chr2, out LP_Chr3, out LP_Chr4, out LP_Chr5, out LP_Chr6);
+                img.Draw(LP_Chr1, new Bgr (Color.Red), 1);
+                img.Draw(LP_Chr2, new Bgr (Color.Red), 1);
+                img.Draw(LP_Chr3, new Bgr (Color.Red), 1);
+                img.Draw(LP_Chr4, new Bgr (Color.Red), 1);
+                img.Draw(LP_Chr5, new Bgr (Color.Red), 1);
+                img.Draw(LP_Chr6, new Bgr (Color.Red), 1);
+                imgChar1 = imgauxiliar.Copy();
+                imgChar1.ROI = LP_Chr1;
+                imgChar2 = imgauxiliar.Copy();
+                imgChar2.ROI = LP_Chr2;
+                imgChar3 = imgauxiliar.Copy();
+                imgChar3.ROI = LP_Chr3;
+                imgChar4 = imgauxiliar.Copy();
+                imgChar4.ROI = LP_Chr4;
+                imgChar5 = imgauxiliar.Copy();
+                imgChar5.ROI = LP_Chr5;
+                imgChar6 = imgauxiliar.Copy();
+                imgChar6.ROI = LP_Chr6;
 
+                char car1;
+                char car2;
+                char car3;
+                char car4;
+                char car5;
+                char car6;
 
+                ImageClass.CharIden(imgChar1, out car1);
+                ImageClass.CharIden(imgChar2, out car2);
+                ImageClass.CharIden(imgChar3, out car3);
+                ImageClass.CharIden(imgChar4, out car4);
+                ImageClass.CharIden(imgChar5, out car5);
+                ImageClass.CharIden(imgChar6, out car6);
+                
 
-            LP_Chr1 = new Rectangle(1, 2, 3, 4);
-            LP_Chr2 = new Rectangle(1, 2, 3, 4);
-            LP_Chr3 = new Rectangle(1, 2, 3, 4);
-            LP_Chr4 = new Rectangle(1, 2, 3, 4);
-            LP_Chr5 = new Rectangle(1, 2, 3, 4);
-            LP_Chr6 = new Rectangle(1, 2, 3, 4);
-            LP_C1 = "";
-            LP_C2 = "";
-            LP_C3 = "";
-            LP_C4 = "";
-            LP_C5 = "";
-            LP_C6 = "";
-            LP_Country = "";
+            LP_C1 = car1.ToString();
+            LP_C2 = car2.ToString();
+            LP_C3 = car3.ToString();
+            LP_C4 = car4.ToString();
+             LP_C5 = car5.ToString();
+             LP_C6 = car6.ToString();
+             LP_Country = "";
             LP_Month = "";
             LP_Year = "";
 
-                imgcopy = img.Copy();
+               
             }
         }
 
-        public static void CharLoc(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
+        public static void CharLoc(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo,int offsetx ,int offsety,out Rectangle LP_Chr1, out Rectangle LP_Chr2, out Rectangle LP_Chr3, out Rectangle LP_Chr4, out Rectangle LP_Chr5, out Rectangle LP_Chr6)
         {//binarizacao e dpeois mudanças de 0 para 1 e ta feito
             unsafe
             {
@@ -2263,7 +2301,26 @@ namespace SS_OpenCV
             int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
             int x, y;
                 int[] verticalSum = new int[width];
-                Mean(img, imgUndo);
+                int[] verticalSum1 = new int[width];
+                int[] horizontalSum = new int[height];
+                int[] gapSum = new int[width];
+                float[,] matrix = new float[3,3];
+                //Mean(img, imgUndo);
+                //imgUndo = img.Copy();
+                matrix[0, 0] =1;
+                matrix[0, 1] =2;
+                matrix[0, 2] =1;
+                matrix[1, 0] =2;
+                matrix[1, 1] =4;
+                matrix[1, 2] =2;
+                matrix[2, 0] =1;
+                matrix[2, 1] =2;
+                matrix[2, 2] = 1;
+                    
+
+
+
+                NonUniform(img, imgUndo,matrix,32);
                 ConvertToBW_Otsu(img);
 
                 dataPtr = (byte*)m.imageData.ToPointer();
@@ -2273,10 +2330,12 @@ namespace SS_OpenCV
                 {
                     if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
                     {
-                            if (dataPtr[0] != (dataPtr + (0) * m.widthStep + (-1) * nChan)[0])
+                            if (dataPtr[0] != (dataPtr + (-1) * m.widthStep + (0) * nChan)[0])
                                 verticalSum[x]++;
+                            if (dataPtr[0]==0)
+                                verticalSum1[x]++;
 
-                    }
+                        }
 
                     // advance the pointer to the next pixel
                     dataPtr += nChan;
@@ -2288,20 +2347,46 @@ namespace SS_OpenCV
 
             }
 
-
+                dataPtr = (byte*)m.imageData.ToPointer();
                 for (y = 0; y < height; y++)
                 {
                     for (x = 0; x < width; x++)
                     {
                         if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
                         {
-                            if (verticalSum[x]>=10)
+                            if (dataPtr[0] != (dataPtr + (0) * m.widthStep + (-1) * nChan)[0])
+                                horizontalSum[y]++;
+                            //if (dataPtr[0] == 0)
+                            //verticalSum1[x]++;
+
+                        }
+
+                        // advance the pointer to the next pixel
+                        dataPtr += nChan;
+
+                    }
+
+                    //at the end of the line advance the pointer by the aligment bytes (padding)
+                    dataPtr += padding;
+
+                }
+
+
+
+                for (y = 0; y < height; y++)
+                {
+                    for (x = 0; x < width; x++)
+                    {
+                       
+                            if (verticalSum[x]<=1 || verticalSum1[x]>=0.90* height|| verticalSum1[x] <= 0.1 * height)
                             {
-                                dataPtr1[0] = 255;
+                                dataPtr1[0] = 254;
+                                dataPtr1[1] = 0;
+                                dataPtr1[2] = 0;
 
                             }
 
-                        }
+                       
                         // advance the pointer to the next pixel
                         dataPtr1 += nChan;
 
@@ -2312,8 +2397,468 @@ namespace SS_OpenCV
 
                 }
 
+
+                dataPtr1 = (byte*)m.imageData.ToPointer();
+                for (y = 0; y < height; y++)
+                {
+                    for (x = 0; x < width; x++)
+                    {
+                     
+                            if (horizontalSum[y] <= 5 )
+                            {
+                                dataPtr1[0] = 254;
+                                dataPtr1[1] = 0;
+                                dataPtr1[2] = 0;
+
+                            }
+
+                        // advance the pointer to the next pixel
+                        dataPtr1 += nChan;
+
+                    }
+
+                    //at the end of the line advance the pointer by the aligment bytes (padding)
+                    dataPtr1 += padding;
+
+                }
+
+                dataPtr = (byte*)m.imageData.ToPointer();
+                int x1=0,y1=0;
+                Boolean aux1 = true,aux2=true;
+
+                for (y = 0; y < height; y++)
+                {
+                    for (x = 0; x < width; x++)
+                    {
+                        if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
+                        {
+                            if (dataPtr[0] != 254&&(y1==0||y1==y))
+                            {
+                                if ((dataPtr + (0) * m.widthStep + (-1) * nChan)[0] == 254)
+                                x1 = x;
+                                gapSum[x1]++;
+                                y1 = y;
+                           
+                            }
+                        }
+                        // advance the pointer to the next pixel
+                        dataPtr += nChan;
+
+                    }
+
+                    //at the end of the line advance the pointer by the aligment bytes (padding)
+                    dataPtr += padding;
+
+                }
+
+         
+
+                int maxValue0 = gapSum.Max();
+                int maxIndex0 = gapSum.ToList().IndexOf(maxValue0);
+                gapSum[maxIndex0] = -6;
+
+
+                int maxValue1 = gapSum.Max();
+                int maxIndex1 = gapSum.ToList().IndexOf(maxValue1);
+                gapSum[maxIndex1] = -1;
+
+
+                int maxValue2 = gapSum.Max();
+                int maxIndex2 = gapSum.ToList().IndexOf(maxValue2);
+                gapSum[maxIndex2] = -2;
+
+
+                int maxValue3 = gapSum.Max();
+                int maxIndex3 = gapSum.ToList().IndexOf(maxValue3);
+                gapSum[maxIndex3] = -3;
+
+
+                int maxValue4 = gapSum.Max();
+                int maxIndex4 = gapSum.ToList().IndexOf(maxValue4);
+                gapSum[maxIndex4] = -4;
+
+
+                int maxValue5 = gapSum.Max();
+                int maxIndex5 = gapSum.ToList().IndexOf(maxValue5);
+                gapSum[maxIndex5] = -5;
+
+                dataPtr1 = (byte*)m.imageData.ToPointer();
+                for (y = 0; y < height; y++)
+                {
+                    for (x = 0; x < width; x++)
+                    {
+
+                        if (x == maxIndex1|| x == maxIndex2|| x == maxIndex3 ||x == maxIndex4 || x == maxIndex5 || x == maxIndex0 )
+                        {
+                            dataPtr1[0] = 0;
+                            dataPtr1[1] = 0;
+                            dataPtr1[2] = 255;
+
+                        }
+
+                        // advance the pointer to the next pixel
+                        dataPtr1 += nChan;
+
+                    }
+
+                    //at the end of the line advance the pointer by the aligment bytes (padding)
+                    dataPtr1 += padding;
+
+                }
+
+
+                dataPtr1 = (byte*)m.imageData.ToPointer();
+                int charsheight = 0;
+                for (y = 0; y < height; y++)
+                {
+                    for (x = 0; x < width; x++)
+                    {
+
+                        if (dataPtr[0] != 254&&x== maxIndex0&&y>y1)
+                        {
+                            charsheight++;
+                        }
+
+                        // advance the pointer to the next pixel
+                        dataPtr1 += nChan;
+
+                    }
+
+                    //at the end of the line advance the pointer by the aligment bytes (padding)
+                    dataPtr1 += padding;
+
+                }
+                charsheight-=1;
+
+                int[] chars = new int[6];
+                chars[0] = maxIndex0;
+                chars[1] = maxIndex1;
+                chars[2] = maxIndex2;
+                chars[3] = maxIndex3;
+                chars[4] = maxIndex4;
+                chars[5] = maxIndex5;
+
+                Array.Sort(chars);
+                LP_Chr1 = new Rectangle();
+                switch (gapSum[chars[0]])
+                    {
+                        case -6:
+                        LP_Chr1 = new Rectangle(chars[0]+offsetx, y1 + offsety, maxValue0, charsheight);
+                        break;
+                        case -1:
+                        LP_Chr1 = new Rectangle(chars[0] + offsetx, y1 + offsety, maxValue1, charsheight);
+                        break;
+                        case -2:
+                        LP_Chr1 = new Rectangle(chars[0] + offsetx, y1 + offsety, maxValue2, charsheight);
+                        break;
+                        case -3:
+                        LP_Chr1 = new Rectangle(chars[0] + offsetx, y1 + offsety, maxValue3, charsheight);
+                        break;
+                        case -4:
+                        LP_Chr1 = new Rectangle(chars[0] + offsetx, y1 + offsety, maxValue4, charsheight);
+                        break;
+                        case -5:
+                        LP_Chr1 = new Rectangle(chars[0] + offsetx, y1 + offsety, maxValue5, charsheight);
+                        break;
+
+                    default:
+                            break;
+                    }
+                LP_Chr2 = new Rectangle();
+                switch (gapSum[chars[1]])
+                {
+                    case -6:
+                        LP_Chr2 = new Rectangle(chars[1] + offsetx, y1 + offsety, maxValue0, charsheight);
+                        break;
+                    case -1:
+                        LP_Chr2 = new Rectangle(chars[1] + offsetx, y1 + offsety, maxValue1, charsheight);
+                        break;
+                    case -2:
+                        LP_Chr2 = new Rectangle(chars[1] + offsetx, y1 + offsety, maxValue2, charsheight);
+                        break;
+                    case -3:
+                        LP_Chr2 = new Rectangle(chars[1] + offsetx, y1 + offsety, maxValue3, charsheight);
+                        break;
+                    case -4:
+                        LP_Chr2 = new Rectangle(chars[1] + offsetx, y1 + offsety, maxValue4, charsheight);
+                        break;
+                    case -5:
+                        LP_Chr2 = new Rectangle(chars[1] + offsetx, y1 + offsety, maxValue5, charsheight);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                LP_Chr3 = new Rectangle();
+                switch (gapSum[chars[2]])
+                {
+                    case -6:
+                        LP_Chr3 = new Rectangle(chars[2] + offsetx, y1 + offsety, maxValue0, charsheight);
+                        break;
+                    case -1:
+                        LP_Chr3 = new Rectangle(chars[2] + offsetx, y1 + offsety, maxValue1, charsheight);
+                        break;
+                    case -2:
+                        LP_Chr3 = new Rectangle(chars[2] + offsetx, y1 + offsety, maxValue2, charsheight);
+                        break;
+                    case -3:
+                        LP_Chr3 = new Rectangle(chars[2] + offsetx, y1 + offsety, maxValue3, charsheight);
+                        break;
+                    case -4:
+                        LP_Chr3 = new Rectangle(chars[2] + offsetx, y1 + offsety, maxValue4, charsheight);
+                        break;
+                    case -5:
+                        LP_Chr3 = new Rectangle(chars[2] + offsetx, y1 + offsety, maxValue5, charsheight);
+                        break;
+
+                    default:
+                        break;
+                }
+                LP_Chr4 = new Rectangle();
+                switch (gapSum[chars[3]])
+                {
+                    case -6:
+                        LP_Chr4 = new Rectangle(chars[3] + offsetx, y1 + offsety, maxValue0, charsheight);
+                        break;
+                    case -1:
+                        LP_Chr4 = new Rectangle(chars[3] + offsetx, y1 + offsety, maxValue1, charsheight);
+                        break;
+                    case -2:
+                        LP_Chr4 = new Rectangle(chars[3] + offsetx, y1 + offsety, maxValue2, charsheight);
+                        break;
+                    case -3:
+                        LP_Chr4 = new Rectangle(chars[3] + offsetx, y1 + offsety, maxValue3, charsheight);
+                        break;
+                    case -4:
+                        LP_Chr4 = new Rectangle(chars[3] + offsetx, y1 + offsety, maxValue4, charsheight);
+                        break;
+                    case -5:
+                        LP_Chr4 = new Rectangle(chars[3] + offsetx, y1 + offsety, maxValue5, charsheight);
+                        break;
+
+                    default:
+                        break;
+                }
+                LP_Chr5 = new Rectangle();
+                switch (gapSum[chars[4]])
+                {
+                    case -6:
+                        LP_Chr5 = new Rectangle(chars[4] + offsetx, y1 + offsety, maxValue0, charsheight);
+                        break;
+                    case -1:
+                        LP_Chr5 = new Rectangle(chars[4] + offsetx, y1 + offsety, maxValue1, charsheight);
+                        break;
+                    case -2:
+                        LP_Chr5 = new Rectangle(chars[4] + offsetx, y1 + offsety, maxValue2, charsheight);
+                        break;
+                    case -3:
+                        LP_Chr5 = new Rectangle(chars[4] + offsetx, y1 + offsety, maxValue3, charsheight);
+                        break;
+                    case -4:
+                        LP_Chr5 = new Rectangle(chars[4] + offsetx, y1 + offsety, maxValue4, charsheight);
+                        break;
+                    case -5:
+                        LP_Chr5 = new Rectangle(chars[4] + offsetx, y1 + offsety, maxValue5, charsheight);
+                        break;
+
+                    default:
+                        break;
+                }
+                LP_Chr6 = new Rectangle();
+                switch (gapSum[chars[5]])
+                {
+                    case -6:
+                        LP_Chr6 = new Rectangle(chars[5] + offsetx, y1 + offsety, maxValue0, charsheight);
+                        break;
+                    case -1:
+                        LP_Chr6 = new Rectangle(chars[5] + offsetx, y1 + offsety, maxValue1, charsheight);
+                        break;
+                    case -2:
+                        LP_Chr6 = new Rectangle(chars[5] + offsetx, y1 + offsety, maxValue2, charsheight);
+                        break;
+                    case -3:
+                        LP_Chr6 = new Rectangle(chars[5] + offsetx, y1 + offsety, maxValue3, charsheight);
+                        break;
+                    case -4:
+                        LP_Chr6 = new Rectangle(chars[5] + offsetx, y1 + offsety, maxValue4, charsheight);
+                        break;
+                    case -5:
+                        LP_Chr6 = new Rectangle(chars[5] + offsetx, y1+offsety, maxValue5, charsheight);
+                        break;
+
+                    default:
+                        break;
+                }
+
+
+
+
+
             }
 
+        }
+
+        public static void CharIden(Image<Bgr, byte> lp1, out char char1 )
+        {
+            int[] absdiff = new int[91];
+            Image<Bgr, Byte> A = new Image<Bgr, Byte>("..\\..\\\\BD\\A.bmp");
+            Image<Bgr, Byte> B = new Image<Bgr, Byte>("..\\..\\BD\\B.bmp");
+            Image<Bgr, Byte> C = new Image<Bgr, Byte>("..\\..\\BD\\C.bmp");
+            Image<Bgr, Byte> D = new Image<Bgr, Byte>("..\\..\\BD\\D.bmp");
+            Image<Bgr, Byte> E = new Image<Bgr, Byte>("..\\..\\BD\\E.bmp");
+            Image<Bgr, Byte> F = new Image<Bgr, Byte>("..\\..\\BD\\F.bmp");
+            Image<Bgr, Byte> G = new Image<Bgr, Byte>("..\\..\\BD\\G.bmp");
+            Image<Bgr, Byte> H = new Image<Bgr, Byte>("..\\..\\BD\\H.bmp");
+            Image<Bgr, Byte> I = new Image<Bgr, Byte>("..\\..\\BD\\I.bmp");
+            Image<Bgr, Byte> J = new Image<Bgr, Byte>("..\\..\\BD\\J.bmp");
+            Image<Bgr, Byte> K = new Image<Bgr, Byte>("..\\..\\BD\\K.bmp");
+            Image<Bgr, Byte> L = new Image<Bgr, Byte>("..\\..\\BD\\L.bmp");
+            Image<Bgr, Byte> M = new Image<Bgr, Byte>("..\\..\\BD\\M.bmp");
+            Image<Bgr, Byte> N = new Image<Bgr, Byte>("..\\..\\BD\\N.bmp");
+            Image<Bgr, Byte> O = new Image<Bgr, Byte>("..\\..\\BD\\O.bmp");
+            Image<Bgr, Byte> P = new Image<Bgr, Byte>("..\\..\\BD\\P.bmp");
+            Image<Bgr, Byte> Q = new Image<Bgr, Byte>("..\\..\\BD\\Q.bmp");
+            Image<Bgr, Byte> R = new Image<Bgr, Byte>("..\\..\\BD\\R.bmp");
+            Image<Bgr, Byte> S = new Image<Bgr, Byte>("..\\..\\BD\\S.bmp");
+            Image<Bgr, Byte> T = new Image<Bgr, Byte>("..\\..\\BD\\T.bmp");
+            Image<Bgr, Byte> U = new Image<Bgr, Byte>("..\\..\\BD\\U.bmp");
+            Image<Bgr, Byte> V = new Image<Bgr, Byte>("..\\..\\BD\\V.bmp");
+            Image<Bgr, Byte> X = new Image<Bgr, Byte>("..\\..\\BD\\X.bmp");
+            Image<Bgr, Byte> Z = new Image<Bgr, Byte>("..\\..\\BD\\Z.bmp");
+            Image<Bgr, Byte> UM = new Image<Bgr, Byte>("..\\..\\BD\\1.bmp");
+            Image<Bgr, Byte> DOIS = new Image<Bgr, Byte>("..\\..\\BD\\2.bmp");
+            Image<Bgr, Byte> TRES = new Image<Bgr, Byte>("..\\..\\BD\\3.bmp");
+            Image<Bgr, Byte> QUATRO = new Image<Bgr, Byte>("..\\..\\BD\\4.bmp");
+            Image<Bgr, Byte> CINCO = new Image<Bgr, Byte>("..\\..\\BD\\5.bmp");
+            Image<Bgr, Byte> SEIS = new Image<Bgr, Byte>("..\\..\\BD\\6.bmp");
+            Image<Bgr, Byte> SETE = new Image<Bgr, Byte>("..\\..\\BD\\7.bmp");
+            Image<Bgr, Byte> OITO = new Image<Bgr, Byte>("..\\..\\BD\\8.bmp");
+            Image<Bgr, Byte> NOVE = new Image<Bgr, Byte>("..\\..\\BD\\9.bmp");
+            Image<Bgr, Byte> ZERO = new Image<Bgr, Byte>("..\\..\\BD\\0.bmp");
+
+
+
+            absdiff[65] = Compare(lp1, A);
+            absdiff[66] = Compare(lp1, B);
+            absdiff[67] = Compare(lp1, C);
+            absdiff[68] = Compare(lp1, D);
+            absdiff[69] = Compare(lp1, E);
+            absdiff[70] = Compare(lp1, F);
+            absdiff[71] = Compare(lp1, G);
+            absdiff[72] = Compare(lp1, H);
+            absdiff[73] = Compare(lp1, I);
+            absdiff[74] = Compare(lp1, J);
+            absdiff[75] = Compare(lp1, K);
+            absdiff[76] = Compare(lp1, L);
+            absdiff[77] = Compare(lp1, M);
+            absdiff[78] = Compare(lp1, N);
+            absdiff[79] = Compare(lp1, O);
+            absdiff[80] = Compare(lp1, P);
+            absdiff[81] = Compare(lp1, Q);
+            absdiff[82] = Compare(lp1, R);
+            absdiff[83] = Compare(lp1, S);
+            absdiff[84] = Compare(lp1, T);
+            absdiff[85] = Compare(lp1, U);
+            absdiff[86] = Compare(lp1, V);
+            absdiff[88] = Compare(lp1, X);
+            absdiff[90] = Compare(lp1, Z);
+            absdiff[49] = Compare(lp1, UM);
+            absdiff[50] = Compare(lp1, DOIS);
+            absdiff[51] = Compare(lp1, TRES);
+            absdiff[52] = Compare(lp1, QUATRO);
+            absdiff[53] = Compare(lp1, CINCO);
+            absdiff[54] = Compare(lp1, SEIS);
+            absdiff[55] = Compare(lp1, SETE);
+            absdiff[56] = Compare(lp1, OITO);
+            absdiff[57] = Compare(lp1, NOVE);
+            absdiff[48] = Compare(lp1, ZERO);
+
+
+            int max=absdiff.Max();
+            int maxindex = absdiff.ToList().IndexOf(max);
+            //Console.Write(((char)maxindex));
+            //Console.Write(maxindex);
+            char1 = (char)maxindex;
+
+
+
+
+
+
+    }
+
+        public static int Compare(Image<Bgr, byte> imag1, Image<Bgr, byte> imag2)
+        {
+            Image<Bgr, Byte> img01 = imag1.Copy();
+            Image<Bgr, Byte> img02 = imag2.Copy();
+
+
+            Image<Bgr, Byte> img1 =img01.Resize(64, 64, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
+            Image<Bgr, Byte> img2 =img02.Resize(64, 64, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
+            MIplImage m1 = img1.MIplImage;
+            MIplImage m2 = img2.MIplImage;
+            ConvertToBW_Otsu(img1);
+            ConvertToBW_Otsu (img2);
+
+            //using (img1)
+            //{
+            //    //Show the image
+            //    CvInvoke.cvShowImage("img1", img1.Ptr);
+            //    //Wait for the key pressing event
+            //    CvInvoke.cvWaitKey(0);
+            //    //Destory the window
+            //    CvInvoke.cvDestroyWindow("img1");
+            //}
+
+            //using (img2)
+            //{
+            //    //Show the image
+            //    CvInvoke.cvShowImage("img2", img2.Ptr);
+            //    //Wait for the key pressing event
+            //    CvInvoke.cvWaitKey(0);
+            //    //Destory the window
+            //    CvInvoke.cvDestroyWindow("img2");
+            //}
+
+            int width1 = img1.Width,height1 =img1.Height;
+            int x,y,result=0;
+            int nChan = m1.nChannels; // number of channels - 3
+            int padding = m1.widthStep - m1.nChannels * m1.width; // alinhament bytes (padding)
+
+            unsafe
+            {
+                byte* dataPtr1 = (byte*)m1.imageData.ToPointer(); // Pointer to the image
+                byte* dataPtr2 = (byte*)m2.imageData.ToPointer(); // Pointer to the image
+                for (y = 0; y < height1; y++)
+                {
+                    for (x = 0; x < width1; x++)
+                    {
+
+                        if (dataPtr1[0] == dataPtr2[0])
+                            result++;
+
+
+
+
+                        // advance the pointer to the next pixel
+                        dataPtr1 += nChan;
+                        dataPtr2 += nChan;
+
+
+                    }
+
+                    //at the end of the line advance the pointer by the aligment bytes (padding)
+                    dataPtr1 += padding;
+                    dataPtr2 += padding;
+
+                }
+
+
+
+            }
+            //Console.Write(result+"\n");
+            return (result);
         }
 
         public static void Roberts(Image<Bgr, byte> img, Image<Bgr, byte> imgCopy)
