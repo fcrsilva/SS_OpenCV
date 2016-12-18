@@ -78,9 +78,9 @@
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
             this.imageToolStripMenuItem,
-            this.autoresToolStripMenuItem,
             this.evalToolStripMenuItem,
-            this.plateTestingToolStripMenuItem});
+            this.plateTestingToolStripMenuItem,
+            this.autoresToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);

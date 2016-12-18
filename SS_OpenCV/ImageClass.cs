@@ -568,9 +568,9 @@ namespace SS_OpenCV
 
                             if (y == 0) //primeira linha
                             {
-                                if (x != 0 && x != width) //excluir os cantos
+                                if (x != 0 && x != width-1) //excluir os cantos
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Abs(Math.Round(
                                     matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
                                     matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
@@ -580,8 +580,11 @@ namespace SS_OpenCV
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    if (blue > 255)
+                                        blue = 255;
+                                    dataPtr[0] = (byte)blue;
 
-                                    dataPtr[1] = (byte)((
+                                    green = (int)Math.Abs(Math.Round(
                                     matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
                                     matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
@@ -591,8 +594,11 @@ namespace SS_OpenCV
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    if (green > 255)
+                                        green = 255;
+                                    dataPtr[1] = (byte)green;
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Abs(Math.Round(
                                     matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
                                     matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
@@ -602,87 +608,108 @@ namespace SS_OpenCV
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
+                                    if (red > 255)
+                                        red = 255;
+                                    dataPtr[2] = (byte)red;
 
                                 }
 
                                 if (x == 0)//canto sup esq
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Abs(Math.Round(
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
-                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    if (blue > 255)
+                                        blue = 255;
+                                    dataPtr[0] = (byte)blue;
 
-                                    dataPtr[1] = (byte)((
+                                    green = (int)Math.Abs(Math.Round(
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
-                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    if (green > 255)
+                                        green = 255;
+                                    dataPtr[1] = (byte)green;
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Abs(Math.Round(
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
-                                    matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                    matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
+                                    if (red > 255)
+                                        red = 255;
+                                    dataPtr[2] = (byte)red;
                                 }
 
-                                if (x == width)//canto sup esq
+                                if (x == width-1)//canto sup dir
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Abs(Math.Round(
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
-                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
-                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
-                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) / matrixWeight);
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) / matrixWeight);
+                                    if (blue > 255)
+                                        blue = 255;
+                                    dataPtr[0] = (byte)blue;
 
-                                    dataPtr[1] = (byte)((
+                                    green = (int)Math.Abs(Math.Round(
                                      matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
-                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
-                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
-                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) / matrixWeight);
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) / matrixWeight);
+                                    if (green > 255)
+                                        green = 255;
+                                    dataPtr[1] = (byte)green;
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Abs(Math.Round(
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
-                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[1] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[2] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
-                                    matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                    matrixaux[0] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
-                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) / matrixWeight);
+                                    matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                    matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) / matrixWeight);
+                                    if (red > 255)
+                                        red = 255;
+                                    dataPtr[2] = (byte)red;
                                 }
                             }
 
                             if (x == 0) //primeira coluna
                             {
-                                if (y != 0 && y != height) //excluir o canto
+                                if (y != 0 && y != height-1) //excluir o canto
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Abs(Math.Round(
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
@@ -692,8 +719,11 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    if (blue > 255)
+                                        blue = 255;
+                                    dataPtr[0] = (byte)blue;
 
-                                    dataPtr[1] = (byte)((
+                                    green = (int)Math.Abs(Math.Round(
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
@@ -703,8 +733,11 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    if (green > 255)
+                                        green = 255;
+                                    dataPtr[1] = (byte)green;
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Abs(Math.Round(
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[4] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
@@ -714,15 +747,18 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
+                                    if (red > 255)
+                                        red = 255;
+                                    dataPtr[2] = (byte)red;
 
                                 }
                             }
 
-                            if (y == height) //ultima linha
+                            if (y == height-1) //ultima linha
                             {
-                                if (x != 0 && y != height) //excluir os cantos
+                                if (x != 0 && x != width-1) //excluir os cantos
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Abs(Math.Round(
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
@@ -732,8 +768,11 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
                                     matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    if (blue > 255)
+                                        blue = 255;
+                                    dataPtr[0] = (byte)blue;
 
-                                    dataPtr[1] = (byte)((
+                                    green = (int)Math.Abs(Math.Round(
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
@@ -743,8 +782,11 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
                                     matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    if (green > 255)
+                                        green = 255;
+                                    dataPtr[1] = (byte)green;
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Abs(Math.Round(
                                    matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
@@ -754,11 +796,13 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
                                     matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
-
+                                    if (red > 255)
+                                        red = 255;
+                                    dataPtr[2] = (byte)red;
                                 }
                                 if (x == 0) //canto inferior esquerdo
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Abs(Math.Round(
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
@@ -768,8 +812,11 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
                                     matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) / matrixWeight);
+                                    if (blue > 255)
+                                        blue = 255;
+                                    dataPtr[0] = (byte)blue;
 
-                                    dataPtr[1] = (byte)((
+                                    green = (int)Math.Abs(Math.Round(
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
@@ -779,9 +826,12 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
                                     matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) / matrixWeight);
+                                    if (green > 255)
+                                        green = 255;
+                                    dataPtr[1] = (byte)green;
 
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Abs(Math.Round(
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
@@ -791,11 +841,13 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[5] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
                                     matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) / matrixWeight);
-
+                                    if (red > 255)
+                                        red = 255;
+                                    dataPtr[2] = (byte)red;
                                 }
-                                if (x == width) //canto inferior direito
+                                if (x == width-1) //canto inferior direito
                                 {
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Abs(Math.Round(
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
@@ -805,8 +857,11 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
                                     matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) / matrixWeight);
+                                    if (blue > 255)
+                                        blue = 255;
+                                    dataPtr[0] = (byte)blue;
 
-                                    dataPtr[1] = (byte)((
+                                    green = (int)Math.Abs(Math.Round(
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
@@ -816,9 +871,12 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
                                     matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]) / matrixWeight);
+                                    if (green > 255)
+                                        green = 255;
+                                    dataPtr[1] = (byte)green;
 
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Abs(Math.Round(
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
@@ -828,15 +886,18 @@ namespace SS_OpenCV
                                     matrixaux[7] * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[3] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
                                     matrixaux[8] * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) / matrixWeight);
+                                    if (red > 255)
+                                        red = 255;
+                                    dataPtr[2] = (byte)red;
 
                                 }
                             }
-                            if (x == width) //ultima coluna
+                            if (x == width-1) //ultima coluna
                             {
-                                if (y != 0 && y != height) //excluir os cantos
+                                if (y != 0 && y != height-1) //excluir os cantos
                                 {
 
-                                    dataPtr[0] = (byte)((
+                                    blue = (int)Math.Abs(Math.Round(
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
@@ -846,8 +907,11 @@ namespace SS_OpenCV
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) / matrixWeight);
+                                    if (blue > 255)
+                                        blue = 255;
+                                    dataPtr[0] = (byte)blue;
 
-                                    dataPtr[1] = (byte)((
+                                    green = (int)Math.Abs(Math.Round(
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
@@ -857,8 +921,11 @@ namespace SS_OpenCV
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1]) / matrixWeight);
+                                    if (green > 255)
+                                        green = 255;
+                                    dataPtr[1] = (byte)green;
 
-                                    dataPtr[2] = (byte)((
+                                    red = (int)Math.Abs(Math.Round(
                                     matrixaux[0] * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
                                     matrixaux[1] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[2] * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
@@ -868,6 +935,9 @@ namespace SS_OpenCV
                                     matrixaux[6] * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
                                     matrixaux[7] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
                                     matrixaux[8] * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2]) / matrixWeight);
+                                    if (red > 255)
+                                        red = 255;
+                                    dataPtr[2] = (byte)red;
                                 }
 
                             }
@@ -1180,7 +1250,7 @@ namespace SS_OpenCV
                     }
                 }
             }
-        }//not working
+        }
 
         public static int[,] Histogram_All(Image<Bgr, byte> img)
         {
@@ -1382,6 +1452,748 @@ namespace SS_OpenCV
                 int height = img.Height;
                 int nChan = m.nChannels; // number of channels - 3
                 int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
+                int x, y, green, blue, red, sobelX, sobelY, sumSobel;
+
+
+                if (nChan == 3) // image in RGB
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                        {
+                            if (y != 0 && x != 0 && y != height - 1 && x != width - 1)
+                            {
+
+                                sobelX = (int)Math.Abs(Math.Round((
+                                        (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                        0.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                        -1 * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                        2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                        0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                        -2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) +
+                                        ((dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                        0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                        -1 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0])));
+
+                                sobelY = (int)Math.Abs(Math.Round((
+                                        -1 * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                        -2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                        -1 * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                        0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                        0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                        0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) +
+                                        ((dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                        2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                        1 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0])));
+
+                                if (sobelX + sobelY > 255)
+                                    sumSobel = 255;
+                                else
+                                    sumSobel = sobelX + sobelY;
+                                dataPtr[0] = (byte)sumSobel;
+
+                                sobelX = (int)Math.Abs(Math.Round((
+                                        (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                        0.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                        -1 * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                        2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                        0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                        -2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) +
+                                        ((dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                        0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                        -1 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1])));
+
+                                sobelY = (int)Math.Abs(Math.Round((
+                                -1 * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                -2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                -1 * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) +
+                                ((dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                1 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1])));
+
+                                if (sobelX + sobelY > 255)
+                                    sumSobel = 255;
+                                else
+                                    sumSobel = sobelX + sobelY;
+                                dataPtr[1] = (byte)sumSobel;
+
+                                sobelX = (int)Math.Abs(Math.Round((
+                                (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                0.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                -1 * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                2 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                -2 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) +
+                                ((dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                -1 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2])));
+
+                                sobelY = (int)Math.Abs(Math.Round((
+                                -1 * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                -2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                -1 * (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) +
+                                ((dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                2 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                1 * (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2])));
+
+                                if (sobelX + sobelY > 255)
+                                    sumSobel = 255;
+                                else
+                                    sumSobel = sobelX + sobelY;
+                                dataPtr[2] = (byte)sumSobel;
+
+
+                            }
+
+                            if (y == 0) //primeira linha
+                            {
+                                if (x != 0 && x != width - 1) //excluir os cantos
+                                {
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                             (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                            1.0 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0]) -
+                                            ((dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] +
+                                             (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                            1 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                             (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                              (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                            2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[0] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                             (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                            1.0 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1]) -
+                                            ((dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] +
+                                             (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                            1 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                             (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                              (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                            2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[1] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                             2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                              (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                             1.0 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2]) -
+                                             ((dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] +
+                                              (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                             2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                            1 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                             (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                              (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                            2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[2] = (byte)sumSobel;
+                                }
+
+                                if (x == 0)//canto sup esq
+                                {
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                                (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                                (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0]) -
+                                                ((dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] +
+                                                 (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                 (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                                 (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) -
+                                                ((dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                                1 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[0] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                                (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                                (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1]) -
+                                                ((dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] +
+                                                 (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                 (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                                 (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) -
+                                                ((dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                                1 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[1] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                                (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2]) -
+                                                ((dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] +
+                                                 (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                 (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                                2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                                 (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) -
+                                                ((dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                1 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[2] = (byte)sumSobel;
+                                }
+
+                                if (x == width - 1)//canto sup dir
+                                {
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                             (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) -
+                                            ((dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                             (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                              (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                             (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                            2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                            1 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[0] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                             (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]) -
+                                            ((dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                             (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                              (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                             (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                            2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                            1 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[1] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                             (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) -
+                                            ((dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                             (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                              (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                             (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                            2 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                            1 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[2] = (byte)sumSobel;
+                                }
+                            }
+
+                            if (x == 0) //primeira coluna
+                            {
+                                if (y != 0 && y != height - 1) //excluir o canto
+                                {
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                                (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                                 (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) -
+                                                ((dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0] +
+                                                 (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                               (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                                (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[0]) -
+                                                ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                                2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                                1 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[0] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                                (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                                 (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) -
+                                                ((dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1] +
+                                                 (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                               (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                                (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[1]) -
+                                                ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                                2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                                1 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1])));
+
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[1] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                                 (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                                  (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                                 2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                 0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                 0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) -
+                                                 ((dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2] +
+                                                  (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                                 2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                               (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                                (dataPtrUndo + (1) * m.widthStep + (1) * nChan)[2]) -
+                                                ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                                2 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                                1 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[2] = (byte)sumSobel;
+                                }
+                            }
+
+                            if (y == height - 1) //ultima linha
+                            {
+                                if (x != 0 && x != width - 1) //excluir os cantos
+                                {
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                             (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                             (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                1 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                                (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) -
+                                                ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                                1 * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[0] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                           (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                            (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                           2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]) -
+                                           ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                            (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                           2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                1 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                                (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) -
+                                                ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                                1 * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[1] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                           (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                            (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                           2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) -
+                                           ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                            (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                           2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                1 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) -
+                                                ((dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                                2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                                1 * (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[2] = (byte)sumSobel;
+                                }
+                                if (x == width - 1) //canto inferior direito
+                                {
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                             (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                            (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                 (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                                 (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) -
+                                                ((dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                                2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                                1 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[0] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                             (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                              (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                             2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1]) -
+                                             ((dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                             (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                             2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                 (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                                 (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) -
+                                                ((dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                                2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                                1 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1])));
+
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[1] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                             (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                            (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                                 (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                                 (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                                0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) -
+                                                ((dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                                2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                                1 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2])));
+
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[2] = (byte)sumSobel;
+                                }
+                                if (x == 0) //canto inferior esq
+                                {
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                            1 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                             (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                             (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                             (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) -
+                                            ((dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                            (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[0] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                            1 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                             (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                            (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1] +
+                                           2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                           0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[1] +
+                                           0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                           0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) -
+                                           ((dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                           (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[1] +
+                                           2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[1] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                            1 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2]) -
+                                            ((dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                             (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                            (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2] +
+                                           2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                           0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[2] +
+                                           0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                           0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) -
+                                           ((dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                           (dataPtrUndo + (-1) * m.widthStep + (1) * nChan)[2] +
+                                           2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[2] = (byte)sumSobel;
+
+                                }
+                            }
+                            if (x == width - 1) //ultima coluna
+                            {
+                                if (y != 0 && y != height - 1) //excluir os cantos
+                                {
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                            (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (-1) * nChan)[0]) -
+                                            ((dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                             (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                            1 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[0] +
+                                             (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                            0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]) -
+                                            ((dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[0] +
+                                            2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0] +
+                                            1 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[0])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[0] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                            (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) -
+                                            ((dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                             (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                            1 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[1] +
+                                             (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                            0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[1] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[1] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[1]) -
+                                            ((dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[1] +
+                                            2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1] +
+                                            1 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[1])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[1] = (byte)sumSobel;
+
+                                    sobelX = (int)Math.Abs(Math.Round((
+                                            (dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                            (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) -
+                                            ((dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                             (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2])));
+
+                                    sobelY = (int)Math.Abs(Math.Round((
+                                            1 * (dataPtrUndo + (1) * m.widthStep + (-1) * nChan)[2] +
+                                             (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                            0 * (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[2] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] +
+                                            0 * (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]) -
+                                            ((dataPtrUndo + (-1) * m.widthStep + (-1) * nChan)[2] +
+                                            2.0 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2] +
+                                            1 * (dataPtrUndo + (-1) * m.widthStep + (0) * nChan)[2])));
+
+                                    if (sobelX + sobelY > 255)
+                                        sumSobel = 255;
+                                    else
+                                        sumSobel = sobelX + sobelY;
+                                    dataPtr[2] = (byte)sumSobel;
+                                }
+
+                            }
+
+
+                            // advance the pointer to the next pixel
+                            dataPtr += nChan;
+                            dataPtrUndo += nChan;
+
+                        }
+
+                        //at the end of the line advance the pointer by the aligment bytes (padding)
+                        dataPtr += padding;
+                        dataPtrUndo += padding;
+
+                    }
+                }
+            }
+        }
+
+        public static void SobelChico(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
+        {
+            unsafe
+            {
+                // direct access to the image memory(sequencial)
+                // direcion top left -> bottom right
+                MIplImage m = img.MIplImage;
+                MIplImage mU = imgUndo.MIplImage;
+
+                byte* dataPtr = (byte*)m.imageData.ToPointer(); // Pointer to the image
+                byte* dataPtrUndo = (byte*)mU.imageData.ToPointer(); // Pointer to the image
+
+                int width = img.Width;
+                int height = img.Height;
+                int nChan = m.nChannels; // number of channels - 3
+                int padding = m.widthStep - m.nChannels * m.width; // alinhament bytes (padding)
                 int x, y,green,blue,red,sobelX,sobelY,sumSobel;
 
 
@@ -1551,6 +2363,9 @@ namespace SS_OpenCV
             }
         }
 
+
+
+
         public static void Diferentiation(Image<Bgr, byte> img, Image<Bgr, byte> imgUndo)
         {
             unsafe
@@ -1594,7 +2409,7 @@ namespace SS_OpenCV
 
                             if (y == 0) //primeira linha
                             {
-                                if (x == width)//canto sup dir
+                                if (x == width-1)//canto sup dir
                                 {
                                     dataPtr[0] = (byte)(
                                             Math.Abs((byte)(dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] - (dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0]) +
@@ -1612,7 +2427,7 @@ namespace SS_OpenCV
 
                             if (x == 0) //primeira coluna
                             {
-                                if (y != 0 && y != height) //excluir o canto
+                                if (y != 0 && y != height-1) //excluir o canto
                                 {
                                     dataPtr[0] = (byte)(Math.Abs((byte)(dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] + (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) +
                                            Math.Abs((byte)(dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] - (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]));
@@ -1626,9 +2441,9 @@ namespace SS_OpenCV
                                 }
                             }
 
-                            if (y == height) //ultima linha
+                            if (y == height-1) //ultima linha
                             {
-                                if (x != 0 && y != height) //excluir os cantos
+                                if (x != 0 && y != height-1) //excluir os cantos
                                 {
                                     dataPtr[0] = (byte)(Math.Abs((byte)(dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] + (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) +
                                            Math.Abs((byte)(dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] - (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]));
@@ -1652,7 +2467,7 @@ namespace SS_OpenCV
                                                 Math.Abs((byte)(dataPtrUndo + (0) * m.widthStep + (0) * nChan)[2] - (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[2]));
 
                                 }
-                                if (x == width) //canto inferior direito
+                                if (x == width-1) //canto inferior direito
                                 {
                                     dataPtr[0] = (byte)(Math.Abs((byte)(dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] + (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) +
                                             Math.Abs((byte)(dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] - (dataPtrUndo + (0) * m.widthStep + (1) * nChan)[0]));
@@ -1665,9 +2480,9 @@ namespace SS_OpenCV
 
                                 }
                             }
-                            if (x == width) //ultima coluna
+                            if (x == width-1) //ultima coluna
                             {
-                                if (y != 0 && y != height) //excluir os cantos
+                                if (y != 0 && y != height-1) //excluir os cantos
                                 {
 
                                     dataPtr[0] = (byte)(Math.Abs((byte)(dataPtrUndo + (0) * m.widthStep + (0) * nChan)[0] + (dataPtrUndo + (1) * m.widthStep + (0) * nChan)[0]) +
@@ -2239,12 +3054,12 @@ namespace SS_OpenCV
                 imgaux = imgPlate.Copy();
                 imgUndo = imgaux.Copy();
                 ImageClass.CharLoc(imgaux, imgUndo, plateL, topY, out LP_Chr1, out LP_Chr2, out LP_Chr3, out LP_Chr4, out LP_Chr5, out LP_Chr6);
-                img.Draw(LP_Chr1, new Bgr (Color.Red), 1);
-                img.Draw(LP_Chr2, new Bgr (Color.Red), 1);
-                img.Draw(LP_Chr3, new Bgr (Color.Red), 1);
-                img.Draw(LP_Chr4, new Bgr (Color.Red), 1);
-                img.Draw(LP_Chr5, new Bgr (Color.Red), 1);
-                img.Draw(LP_Chr6, new Bgr (Color.Red), 1);
+                //img.Draw(LP_Chr1, new Bgr (Color.Red), 1);
+                //img.Draw(LP_Chr2, new Bgr (Color.Red), 1);
+                //img.Draw(LP_Chr3, new Bgr (Color.Red), 1);
+                //img.Draw(LP_Chr4, new Bgr (Color.Red), 1);
+                //img.Draw(LP_Chr5, new Bgr (Color.Red), 1);
+                //img.Draw(LP_Chr6, new Bgr (Color.Red), 1);
                 imgChar1 = imgauxiliar.Copy();
                 imgChar1.ROI = LP_Chr1;
                 imgChar2 = imgauxiliar.Copy();

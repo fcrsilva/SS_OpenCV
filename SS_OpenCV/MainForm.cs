@@ -381,6 +381,15 @@ namespace SS_OpenCV
             //Image<Bgr, Byte> test = imgPlate.Copy();
             //ImageClass.ConvertToBW(test, 100);
             img = imgUndo.Copy();
+
+            img.Draw(loc, new Bgr(Color.Red), 1);
+            img.Draw(lp1, new Bgr(Color.Red), 1);
+            img.Draw(lp2, new Bgr(Color.Red), 1);
+            img.Draw(lp3, new Bgr(Color.Red), 1);
+            img.Draw(lp4, new Bgr(Color.Red), 1);
+            img.Draw(lp5, new Bgr(Color.Red), 1);
+            img.Draw(lp6, new Bgr(Color.Red), 1);
+
             Console.Write("-" + l3 + l4 + "-" + l5 + l6);
             ImageViewer.SizeMode = PictureBoxSizeMode.Zoom;
             ImageViewer.Dock = DockStyle.Fill;

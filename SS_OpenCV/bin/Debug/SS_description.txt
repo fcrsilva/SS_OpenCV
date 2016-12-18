@@ -1,5 +1,4 @@
 11111
 0
 0
-Indique aqui a lista de funcionalidades que valorizam o vosso projeto:
--
+Neste projecto existem todas as funcionalidades pedidas nas aulas práticas(métodos da Image Class). Bem como uma interface gráfica onde é possível aplicar as diferentes operações sobre uma imagem a escolha do utilizador. Inclui ainda um método de detecção de matrículas que detecta a posição da matrícula e dos diferentes caracteres em todas as imagens da base de dados testada reconhecendo qual o caracter em mais de 95% dos casos.
